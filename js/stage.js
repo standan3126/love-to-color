@@ -8,6 +8,10 @@
 // The picture is drawn onto a screen-sized canvas each frame from two full-size canvases (fills
 // and outlines), so it stays sharp and light on memory at any zoom. Numbers are drawn at screen
 // size on top, so they're crisp, and only appear once they're big enough to read.
+//
+// Soft outlines (Detailed pictures): the outlines are dark gray and belong to the cells, so a
+// colored cell covers its own half of every line. Once neighbors are both colored, no line is
+// left between them and the picture looks like a painting.
 import { hexToRgb } from './engine.js'
 
 const TAP_MOVE = 10 // pixels a finger may move and still count as a tap
@@ -15,21 +19,24 @@ const TAP_TIME = 600 // ms
 const MAX_ZOOM = 14 // times the fitted size
 const INK = [43, 38, 34]
 const PAPER = [255, 255, 255]
+export const SOFT_INK = [104, 102, 98]
 // Unfilled cells of the chosen number get soft stripes, easy to spot on white paper.
 const STRIPE_A = [184, 200, 222]
 const STRIPE_B = [222, 230, 241]
 const STRIPE = 7 // stripe width, in picture pixels
 
 export class Stage {
-  constructor(host, cells, { onTap }) {
+  constructor(host, cells, { onTap, soft = false }) {
     this.host = host
     this.cells = cells
     this.onTap = onTap
+    this.soft = soft
     const { width: w, height: h } = cells
     this.fillCanvas = Object.assign(document.createElement('canvas'), { width: w, height: h })
     this.fillCtx = this.fillCanvas.getContext('2d')
     this.fill = this.fillCtx.createImageData(w, h)
     this.fill.data.fill(255)
+    if (soft) for (let p = 0; p < w * h; p++) this.paper(this.fill.data, p, PAPER)
     this.fillCtx.putImageData(this.fill, 0, 0)
     this.lineCanvas = Object.assign(document.createElement('canvas'), { width: w, height: h })
     const lines = this.lineCanvas.getContext('2d').createImageData(w, h)
@@ -62,6 +69,15 @@ export class Stage {
     this.paint(cell)
   }
 
+  // An uncolored pixel: the background, with a soft outline on it if there is one.
+  paper(d, p, rgb) {
+    const a = this.soft ? this.cells.lineAlpha[p] / 255 : 0
+    const k = p * 4
+    d[k] = rgb[0] + a * (SOFT_INK[0] - rgb[0])
+    d[k + 1] = rgb[1] + a * (SOFT_INK[1] - rgb[1])
+    d[k + 2] = rgb[2] + a * (SOFT_INK[2] - rgb[2])
+  }
+
   // Shade (or unshade) unfilled cells, e.g. every cell of the chosen number.
   setTinted(test) {
     for (let c = 0; c < this.cells.cellCount; c++) {
@@ -81,14 +97,12 @@ export class Stage {
       for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
         const p = cellPixels[i]
         const x = p % w
-        const rgb = Math.floor((x + (p - x) / w) / STRIPE) % 2 ? STRIPE_A : STRIPE_B
-        const k = p * 4
-        d[k] = rgb[0]
-        d[k + 1] = rgb[1]
-        d[k + 2] = rgb[2]
+        this.paper(d, p, Math.floor((x + (p - x) / w) / STRIPE) % 2 ? STRIPE_A : STRIPE_B)
       }
+    } else if (!this.colors[cell]) {
+      for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) this.paper(d, cellPixels[i], PAPER)
     } else {
-      const rgb = this.colors[cell] ? hexToRgb(this.colors[cell]) : PAPER
+      const rgb = hexToRgb(this.colors[cell])
       for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
         const k = cellPixels[i] * 4
         d[k] = rgb[0]
@@ -112,6 +126,7 @@ export class Stage {
     const { width: w, height: h, cellStart, cellPixels } = this.cells
     const plain = new ImageData(w, h)
     plain.data.fill(255)
+    if (this.soft) for (let p = 0; p < w * h; p++) this.paper(plain.data, p, PAPER)
     this.colors.forEach((hex, cell) => {
       if (!hex) return
       const [r, g, b] = hexToRgb(hex)
@@ -129,7 +144,7 @@ export class Stage {
     const g = c.getContext('2d')
     g.imageSmoothingQuality = 'high'
     g.drawImage(fills, 0, 0, c.width, c.height)
-    g.drawImage(this.lineCanvas, 0, 0, c.width, c.height)
+    if (!this.soft) g.drawImage(this.lineCanvas, 0, 0, c.width, c.height)
     return c
   }
 
@@ -159,7 +174,7 @@ export class Stage {
     ctx.imageSmoothingEnabled = true
     ctx.imageSmoothingQuality = s > 1.5 ? 'low' : 'high'
     ctx.drawImage(this.fillCanvas, 0, 0)
-    ctx.drawImage(this.lineCanvas, 0, 0)
+    if (!this.soft) ctx.drawImage(this.lineCanvas, 0, 0)
     // Numbers, sized to their cell and skipped while too small to read.
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
     ctx.textAlign = 'center'

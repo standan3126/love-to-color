@@ -3,7 +3,7 @@
 //   npm run photos      then open http://localhost:4191/tools/photo-tool.html
 //
 // Only this computer can reach it (it listens on 127.0.0.1). "Add to game" writes
-// art/<id>/<size>-lines.png and <size>-colors.png for Easy, Cozy and Detailed, adds the picture to
+// art/<id>/detailed-lines.png and detailed-colors.png (photo pictures are all Detailed), adds it to
 // art/art.json and its credit to CREDITS.md. The photo itself is never copied into the game, so
 // nothing hidden in it (like where it was taken) goes anywhere.
 import { createServer } from 'node:http'
@@ -17,7 +17,7 @@ const hub = resolve(root, '../hub')
 const photos = join(root, 'private/photos')
 const port = Number(process.argv[2] || 4191)
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.png': 'image/png', '.jpg': 'image/jpeg', '.jpeg': 'image/jpeg', '.webp': 'image/webp' }
-const SIZES = ['easy', 'cozy', 'detailed']
+const SIZES = ['detailed']
 
 const slug = (name) => name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40)
 

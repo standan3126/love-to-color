@@ -12,10 +12,10 @@
 //
 // Everything is seeded, so the same photo and settings always give the same picture.
 
+// Photo pictures are all Detailed (very detailed, with soft outlines in the game). Pictures made
+// on 2026-10-27, before the sections, also have Easy and Cozy files made with older settings.
 export const PRESETS = {
-  easy: { colors: 8, soften: 7, passes: 2, smallest: 0.0025, round: 4, line: 5 },
-  cozy: { colors: 14, soften: 4, passes: 2, smallest: 0.0008, round: 2, line: 3 },
-  detailed: { colors: 24, soften: 2, passes: 1, smallest: 0.00022, round: 1, line: 2 },
+  detailed: { colors: 32, soften: 2, passes: 1, smallest: 0.00006, round: 1, line: 2 },
 }
 
 export const SETTING_NOTES = {

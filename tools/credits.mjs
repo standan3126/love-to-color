@@ -28,12 +28,12 @@ export function writeCredits(root) {
   if (photos.length) {
     lines.push(
       '',
-      '## Photos',
+      '## Photos and prints',
       '',
-      'These pictures were made from photos that are public domain, CC0, or our own, turned into',
-      'outlines and colors by `tools/photo-tool`. The photos themselves are not part of the game.',
+      'These pictures were made from photos and artworks that are public domain, CC0, or our own,',
+      'turned into outlines and colors by `tools/photo-tool`. The originals are not part of the game.',
       '',
-      '| In the game | Photo | By | License |',
+      '| In the game | Original | By | License |',
       '|---|---|---|---|',
       ...photos.map((a) => `| ${cell(a.name)} | ${link(a.credit.title, a.credit.source)} | ${cell(a.credit.artist)} | ${cell(a.credit.license)} |`),
     )

@@ -29,15 +29,18 @@ crayon colors for coloring (`tools/prep-art.mjs`); the originals are in `tools/a
 | Tropical Fish | [cartoon tropical fish](https://openclipart.org/detail/263088) | cirenovy | CC0 1.0 |
 | Snail | [snail](https://openclipart.org/detail/310697) | Mahua_Sarkar | CC0 1.0 |
 
-## Photos
+## Photos and prints
 
-These pictures were made from photos that are public domain, CC0, or our own, turned into
-outlines and colors by `tools/photo-tool`. The photos themselves are not part of the game.
+These pictures were made from photos and artworks that are public domain, CC0, or our own,
+turned into outlines and colors by `tools/photo-tool`. The originals are not part of the game.
 
-| In the game | Photo | By | License |
+| In the game | Original | By | License |
 |---|---|---|---|
 | Fox in the Grass | [Red Fox Sunset (53611202311)](https://commons.wikimedia.org/wiki/File:Red_Fox_Sunset_%2853611202311%29.jpg) | USFWSAlaska | Public domain |
 | Sunset Field | [Sunflower field at sunset](https://commons.wikimedia.org/wiki/File:Sunflower_field_at_sunset.jpg) | Summer Stock | CC0 1.0 |
+| The Great Wave | [Under the Wave off Kanagawa (Kanagawa oki nami ura), also known as The Great Wave, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)](https://www.metmuseum.org/art/collection/search/36491) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
+| Rooster and Hen | [Rooster, Hen and Chicken with Spiderwort](https://www.metmuseum.org/art/collection/search/54305) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
+| Pine Tree by the Lake | [Pine Tree at Karasaki](https://www.metmuseum.org/art/collection/search/56411) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
 
 ## Sound
 

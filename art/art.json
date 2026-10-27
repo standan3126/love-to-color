@@ -498,5 +498,158 @@
    "source": "https://commons.wikimedia.org/wiki/File:Sunflower_field_at_sunset.jpg",
    "license": "CC0 1.0"
   }
+ },
+ {
+  "id": "photo-the-great-wave",
+  "name": "The Great Wave",
+  "group": "nature",
+  "width": 1600,
+  "height": 1087,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#867d71",
+     "#a49682",
+     "#aaa998",
+     "#b8a98f",
+     "#c0ad8e",
+     "#d0b681",
+     "#c2b196",
+     "#c9b595",
+     "#c0b9a2",
+     "#c9b79b",
+     "#d2be9d",
+     "#dbc29d",
+     "#d2c4a8",
+     "#dbc7a7",
+     "#e5caa3",
+     "#e3ceae",
+     "#ebd4b4",
+     "#b8c1ac",
+     "#abb9a7",
+     "#a0b2a4",
+     "#314c67",
+     "#3b546c",
+     "#335876",
+     "#4c5e6f",
+     "#3f627b",
+     "#586c7b",
+     "#657780",
+     "#4d4945",
+     "#6c625b",
+     "#61696f",
+     "#747f81",
+     "#8b948f"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Under the Wave off Kanagawa (Kanagawa oki nami ura), also known as The Great Wave, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)",
+   "artist": "Katsushika Hokusai",
+   "source": "https://www.metmuseum.org/art/collection/search/36491",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-rooster-and-hen",
+  "name": "Rooster and Hen",
+  "group": "animals",
+  "width": 1600,
+  "height": 1218,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#6e534c",
+     "#8a564f",
+     "#ae6056",
+     "#cc514f",
+     "#d1725e",
+     "#db9570",
+     "#dfa67d",
+     "#e5b586",
+     "#7d705b",
+     "#8e8374",
+     "#b49673",
+     "#dbad57",
+     "#c2bf73",
+     "#adad90",
+     "#cbbb75",
+     "#d2c375",
+     "#d6b98e",
+     "#e8c185",
+     "#d6bf9c",
+     "#f1d29f",
+     "#eacfa9",
+     "#86916c",
+     "#aeaf75",
+     "#70816c",
+     "#8ca195",
+     "#759492",
+     "#809d98",
+     "#4c5866",
+     "#3e4143",
+     "#44433f",
+     "#58514c",
+     "#6a675e"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Rooster, Hen and Chicken with Spiderwort",
+   "artist": "Katsushika Hokusai",
+   "source": "https://www.metmuseum.org/art/collection/search/54305",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-pine-tree-by-the-lake",
+  "name": "Pine Tree by the Lake",
+  "group": "nature",
+  "width": 1040,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#947369",
+     "#a88774",
+     "#d27761",
+     "#c2997b",
+     "#dfae86",
+     "#a39b87",
+     "#b4a88e",
+     "#f1cb7d",
+     "#eec887",
+     "#dbc19d",
+     "#edc99c",
+     "#f5d19a",
+     "#f3d2a7",
+     "#6d9c9a",
+     "#81a8a0",
+     "#92b0a4",
+     "#36424d",
+     "#2d5576",
+     "#356784",
+     "#437a8e",
+     "#5f6b74",
+     "#647279",
+     "#578c95",
+     "#203556",
+     "#294665",
+     "#424342",
+     "#4c4946",
+     "#554f4d",
+     "#615754",
+     "#595c5f",
+     "#6e615d",
+     "#827d72"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Pine Tree at Karasaki",
+   "artist": "Utagawa Hiroshige",
+   "source": "https://www.metmuseum.org/art/collection/search/56411",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
  }
 ]

@@ -1,15 +1,29 @@
-// The picture list: drawings prepared from Openclipart and pictures made from photos (both in
-// art/art.json), and patterns drawn in code (patterns.js), and how each becomes cells at Easy,
-// Cozy and Detailed. Drawings have one set of outlines whose small cells join up at Easy and Cozy;
-// photo pictures have their own outlines and colors for each size (tools/photo-tool).
+// The picture list, in three sections:
+//   Easy      simple drawings (art/art.json, prepared from Openclipart)
+//   Cozy      mandalas, fractals and tessellations drawn in code (patterns.js)
+//   Detailed  very detailed pictures made from photos and prints (tools/photo-tool), with soft
+//             gray outlines that colors cover up
+// Each section colors its pictures at one size. Saves made before the sections (2026-10-27) may
+// be at another size; those still open at the size they were saved with.
 import { buildCells } from './engine.js'
 import { drawPattern, PATTERNS, SIZE } from './patterns.js'
+import { SOFT_INK } from './stage.js'
 
 export const SIZES = [
   { id: 'easy', name: 'Easy', note: 'Big cells' },
   { id: 'cozy', name: 'Cozy', note: 'Some detail' },
   { id: 'detailed', name: 'Detailed', note: 'Small cells to zoom into' },
 ]
+
+export const SECTIONS = [
+  { id: 'easy', name: 'Easy', kind: 'art', size: 'easy' },
+  { id: 'cozy', name: 'Cozy', kind: 'pattern', size: 'cozy' },
+  { id: 'detailed', name: 'Detailed', kind: 'photo', size: 'detailed' },
+]
+export const sectionOf = (item) => SECTIONS.find((s) => s.kind === item.kind)
+
+// Detailed pictures have soft outlines (see stage.js).
+export const softLines = (item, size) => item.kind === 'photo' && size === 'detailed'
 
 // For drawings: cells smaller than this share of the picture join a neighbor.
 export const MERGE = [0.004, 0.0012, 0.0003]
@@ -42,7 +56,7 @@ export const findPicture = (id) => catalog?.find((p) => p.id === id)
 export function previewOf(item, px = 220) {
   if (item.kind !== 'pattern') {
     const img = new Image()
-    img.src = item.kind === 'photo' ? `art/${item.id}/cozy-lines.png` : `art/${item.id}/lines.png`
+    img.src = item.kind === 'photo' ? `art/${item.id}/detailed-lines.png` : `art/${item.id}/lines.png`
     img.alt = ''
     img.loading = 'lazy'
     return img
@@ -104,11 +118,12 @@ export async function outlineCanvas(item, detail) {
     c.height = cells.height
     const g = c.getContext('2d')
     const img = g.createImageData(cells.width, cells.height)
+    const ink = softLines(item, SIZES[detail].id) ? SOFT_INK : [43, 38, 34]
     for (let p = 0, k = 0; p < cells.lineAlpha.length; p++, k += 4) {
       const a = cells.lineAlpha[p] / 255
-      img.data[k] = 255 - a * (255 - 43)
-      img.data[k + 1] = 255 - a * (255 - 38)
-      img.data[k + 2] = 255 - a * (255 - 34)
+      img.data[k] = 255 - a * (255 - ink[0])
+      img.data[k + 1] = 255 - a * (255 - ink[1])
+      img.data[k + 2] = 255 - a * (255 - ink[2])
       img.data[k + 3] = 255
     }
     g.putImageData(img, 0, 0)

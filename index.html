@@ -23,12 +23,13 @@
       </section>
       <section>
         <h2>Start a new picture</h2>
+        <div id="sectionTabs" class="sections" role="tablist"></div>
         <div id="groupChips" class="chips" role="tablist"></div>
         <div id="pictureGrid" class="picture-grid"></div>
       </section>
     </main>
 
-    <!-- Setup: size and way of coloring for the chosen picture -->
+    <!-- Setup: the way of coloring for the chosen picture -->
     <main id="setup" class="screen" hidden>
       <header class="bar">
         <button type="button" class="text-button" id="setupBack">‹ Pictures</button>
@@ -36,8 +37,6 @@
       <div class="setup-body">
         <div id="setupPreview" class="setup-preview"></div>
         <h1 id="setupName"></h1>
-        <h2>How big are the cells?</h2>
-        <div id="sizeChoices" class="choices three"></div>
         <h2>How would you like to color?</h2>
         <div id="modeChoices" class="choices"></div>
         <button type="button" class="button big" id="startColoring">Start coloring</button>
@@ -111,7 +110,7 @@
         </div>
         <p id="moveNote" class="soft"></p>
         <h3>Picture credits</h3>
-        <p class="soft">Drawings from <a href="https://openclipart.org" target="_blank" rel="noopener">Openclipart</a> and photos that are public domain or CC0. Thank you to the artists and photographers:</p>
+        <p class="soft">Drawings from <a href="https://openclipart.org" target="_blank" rel="noopener">Openclipart</a>, and photos and prints that are public domain or CC0. Thank you to the artists and photographers:</p>
         <ul id="credits" class="credits"></ul>
       </div>
     </div>

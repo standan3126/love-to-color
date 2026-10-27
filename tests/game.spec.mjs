@@ -10,10 +10,10 @@ async function start(page) {
   return errors
 }
 
-async function openPicture(page, group, name, size, mode) {
-  await page.getByRole('tab', { name: group }).click()
+async function openPicture(page, section, group, name, mode) {
+  await page.getByRole('tab', { name: section, exact: true }).click()
+  if (group) await page.getByRole('tab', { name: group, exact: true }).click()
   await page.locator('.picture-card', { hasText: name }).click()
-  await page.getByRole('radio', { name: new RegExp(size) }).click()
   await page.getByRole('radio', { name: new RegExp(mode) }).click()
   await page.locator('#startColoring').click()
   await expect(page.locator('#preparing')).toBeHidden({ timeout: 20000 })
@@ -37,12 +37,19 @@ const info = (page) =>
     return { count: s.cells.cellCount, target: t, blank: [...s.cells.blank], selected: s.selected, colors: s.stage.colors.slice() }
   })
 
-test('home lists every group of pictures', async ({ page }) => {
+test('home lists every section and group of pictures', async ({ page }) => {
   const errors = await start(page)
-  for (const group of ['Cottages', 'Gardens', 'Animals', 'Mandalas', 'Fractals', 'Tessellations']) {
-    await page.getByRole('tab', { name: group }).click()
-    expect(await page.locator('.picture-card').count()).toBeGreaterThan(0)
+  const sections = { Easy: ['Cottages', 'Gardens', 'Animals'], Cozy: ['Mandalas', 'Fractals', 'Tessellations'], Detailed: ['Animals', 'Nature'] }
+  for (const [section, groups] of Object.entries(sections)) {
+    await page.getByRole('tab', { name: section, exact: true }).click()
+    for (const group of groups) {
+      await page.getByRole('tab', { name: group, exact: true }).click()
+      expect(await page.locator('.picture-card').count()).toBeGreaterThan(0)
+    }
   }
+  // Each section only has its own kind of picture.
+  await page.getByRole('tab', { name: 'Easy', exact: true }).click()
+  await expect(page.getByRole('tab', { name: 'Mandalas' })).toHaveCount(0)
   // Nothing wider than the screen.
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
   expect(errors).toEqual([])
@@ -50,7 +57,7 @@ test('home lists every group of pictures', async ({ page }) => {
 
 test('color by number: right number fills, wrong number nudges, finishing celebrates', async ({ page }) => {
   const errors = await start(page)
-  await openPicture(page, 'Mandalas', 'Sunrise Mandala', 'Easy', 'Color by Number')
+  await openPicture(page, 'Cozy', 'Mandalas', 'Sunrise Mandala', 'Color by Number')
   let s = await info(page)
   const wrong = s.target.findIndex((t) => t !== s.selected && !s.blank.includes(t))
   await tapCell(page, wrong)
@@ -71,7 +78,7 @@ test('color by number: right number fills, wrong number nudges, finishing celebr
 
 test('progress is saved and comes back, also after a reload', async ({ page }) => {
   const errors = await start(page)
-  await openPicture(page, 'Animals', 'Happy Fox', 'Cozy', 'Color by Number')
+  await openPicture(page, 'Easy', 'Animals', 'Happy Fox', 'Color by Number')
   const s = await info(page)
   const mine = s.target.map((t, c) => (t === s.selected ? c : -1)).filter((c) => c !== -1).slice(0, 3)
   for (const c of mine) await tapCell(page, c)
@@ -89,7 +96,7 @@ test('progress is saved and comes back, also after a reload', async ({ page }) =
 
 test('free color: any color, recolor, white clears, undo', async ({ page }) => {
   const errors = await start(page)
-  await openPicture(page, 'Tessellations', 'Honeycomb Flowers', 'Easy', 'Free Color')
+  await openPicture(page, 'Cozy', 'Tessellations', 'Honeycomb Flowers', 'Free Color')
   await page.getByRole('tab', { name: 'Ocean' }).click()
   await page.locator('.swatch[data-hex]').nth(2).click()
   const first = await page.evaluate(() => window.loveToColor.session.selected)
@@ -116,7 +123,7 @@ test('free color: any color, recolor, white clears, undo', async ({ page }) => {
 
 test('zooming in keeps taps on the right cell', async ({ page }) => {
   const errors = await start(page)
-  await openPicture(page, 'Fractals', 'Circles in Circles', 'Detailed', 'Free Color')
+  await openPicture(page, 'Cozy', 'Fractals', 'Circles in Circles', 'Free Color')
   for (let i = 0; i < 4; i++) await page.locator('#zoomIn').click()
   expect(await page.evaluate(() => window.loveToColor.session.stage.zoom)).toBeGreaterThan(5)
   const box = await page.locator('#stage canvas').boundingBox()
@@ -131,32 +138,27 @@ test('zooming in keeps taps on the right cell', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
-test('every picture opens at every size, with more cells as it gets more detailed', async ({ page }, info) => {
+test('every picture opens in its section, and older photo pictures at every size', async ({ page }, info) => {
   test.skip(info.project.name !== 'iphone', 'checked once')
   await start(page)
   const report = await page.evaluate(async () => {
-    const { loadCatalog, loadCells } = await import('./js/pictures.js')
+    const { loadCatalog, loadCells, sectionOf, SIZES } = await import('./js/pictures.js')
     const out = []
     for (const p of await loadCatalog()) {
-      const sizes = []
-      for (const d of [0, 1, 2]) {
-        const cells = await loadCells(p, d)
-        const numbered = Array.from(cells.target).filter((t) => !cells.blank.has(t)).length
-        sizes.push(numbered)
+      const sizes = p.sizes ? Object.keys(p.sizes) : [sectionOf(p).size]
+      for (const size of sizes) {
+        const cells = await loadCells(p, SIZES.findIndex((z) => z.id === size))
+        out.push({ id: `${p.id}:${size}`, numbered: Array.from(cells.target).filter((t) => !cells.blank.has(t)).length })
       }
-      out.push({ id: p.id, sizes })
     }
     return out
   })
-  for (const r of report) {
-    expect(r.sizes[0], r.id).toBeGreaterThan(0)
-    expect(r.sizes[2], r.id).toBeGreaterThanOrEqual(r.sizes[0])
-  }
+  for (const r of report) expect(r.numbered, r.id).toBeGreaterThan(0)
 })
 
 test('pictures move with a code', async ({ page, context }) => {
   await start(page)
-  await openPicture(page, 'Gardens', 'Flower Meadow', 'Easy', 'Free Color')
+  await openPicture(page, 'Easy', 'Gardens', 'Flower Meadow', 'Free Color')
   await tapCell(page, 1)
   await page.locator('#colorBack').click()
   await page.locator('#openSettings').click()
@@ -178,7 +180,7 @@ test('in an iPhone app with a solid top bar, the colors sit fully on screen', as
   await page.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }))
   await start(page)
   expect(await page.evaluate(() => document.documentElement.classList.contains('ios-solid-bar'))).toBe(true)
-  await openPicture(page, 'Mandalas', 'Garden Mandala', 'Easy', 'Color by Number')
+  await openPicture(page, 'Cozy', 'Mandalas', 'Garden Mandala', 'Color by Number')
   const panel = await page.locator('.palette-panel').boundingBox()
   const height = await page.evaluate(() => innerHeight)
   expect(panel.y + panel.height).toBeLessThanOrEqual(height + 1)
@@ -189,7 +191,7 @@ test('in an iPhone app with a solid top bar, the colors sit fully on screen', as
 
 test('a started picture can be deleted from Keep coloring', async ({ page }) => {
   await start(page)
-  await openPicture(page, 'Animals', 'Snail', 'Easy', 'Free Color')
+  await openPicture(page, 'Easy', 'Animals', 'Snail', 'Free Color')
   await tapCell(page, 1)
   await page.locator('#colorBack').click()
   await expect(page.locator('.keep-card')).toHaveCount(1)
@@ -199,24 +201,50 @@ test('a started picture can be deleted from Keep coloring', async ({ page }) => 
   expect(await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('love-to-color:pic:')).length)).toBe(0)
 })
 
-test('setup shows the picture at the size being chosen', async ({ page }) => {
-  await start(page)
-  await page.getByRole('tab', { name: 'Tessellations' }).click()
-  await page.locator('.picture-card', { hasText: 'Fish Scales' }).click()
-  const ink = async () => {
-    await expect(page.locator('#setupPreview')).not.toHaveClass(/busy/)
-    return page.evaluate(() => {
-      const c = document.querySelector('#setupPreview canvas')
-      const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
-      let dark = 0
-      for (let i = 0; i < d.length; i += 4) if (d[i] < 128) dark++
-      return dark
-    })
-  }
-  await page.getByRole('radio', { name: /Easy/ }).click()
-  const easy = await ink()
-  await page.getByRole('radio', { name: /Detailed/ }).click()
-  const detailed = await ink()
-  // A different drawing (more, smaller cells), not the same preview.
-  expect(Math.abs(detailed - easy)).toBeGreaterThan(easy * 0.05)
+test('detailed pictures have soft outlines that colors cover', async ({ page }) => {
+  const errors = await start(page)
+  await openPicture(page, 'Detailed', 'Nature', 'The Great Wave', 'Color by Number')
+  const s = await info(page)
+  expect(s.count).toBeGreaterThan(500)
+  const cell = s.target.findIndex((t) => t === s.selected)
+  // A pixel of this cell's own outline: gray before coloring, the cell's color after.
+  const linePixel = () =>
+    page.evaluate((c) => {
+      const { cells, stage } = window.loveToColor.session
+      stage.flush()
+      for (let i = cells.cellStart[c]; i < cells.cellStart[c + 1]; i++) {
+        const p = cells.cellPixels[i]
+        if (cells.lineAlpha[p] > 200) {
+          const k = p * 4
+          return { p, rgb: Array.from(stage.fill.data.slice(k, k + 3)), soft: stage.soft }
+        }
+      }
+    }, cell)
+  const before = await linePixel()
+  expect(before.soft).toBe(true)
+  expect(before.rgb[0]).toBeLessThan(160)
+  await tapCell(page, cell)
+  const after = await page.evaluate(([p, c]) => {
+    const { cells, stage } = window.loveToColor.session
+    return { rgb: Array.from(stage.fill.data.slice(p * 4, p * 4 + 3)), hex: stage.colors[c], want: cells.palette[cells.target[c]] }
+  }, [before.p, cell])
+  expect(after.hex).toBe(after.want)
+  const hex = '#' + after.rgb.map((v) => v.toString(16).padStart(2, '0')).join('')
+  expect(hex).toBe(after.want)
+  expect(errors).toEqual([])
+})
+
+test('pictures saved before the sections still open at their old size', async ({ page }) => {
+  await page.addInitScript(() => {
+    if (sessionStorage.getItem('seeded')) return
+    sessionStorage.setItem('seeded', '1')
+    const old = { id: 'photo-fox-in-the-grass', size: 'easy', mode: 'free', fills: [], colors: [], updated: Date.now(), percent: 3 }
+    localStorage.setItem('love-to-color:pic:photo-fox-in-the-grass:easy:free', JSON.stringify(old))
+  })
+  const errors = await start(page)
+  await expect(page.locator('.keep-card')).toContainText('Easy')
+  await page.locator('.keep-open').click()
+  await expect(page.locator('#preparing')).toBeHidden({ timeout: 20000 })
+  expect(await page.evaluate(() => [window.loveToColor.session.size, window.loveToColor.session.stage.soft])).toEqual(['easy', false])
+  expect(errors).toEqual([])
 })

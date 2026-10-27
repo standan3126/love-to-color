@@ -15,7 +15,7 @@
   .photos button { border: 2px solid var(--line); border-radius: 12px; padding: 4px; background: #fff; cursor: pointer; }
   .photos button[aria-pressed='true'] { border-color: var(--rose); }
   .photos img { display: block; height: 70px; border-radius: 8px; }
-  .levels { display: grid; grid-template-columns: repeat(3, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+  .levels { display: grid; grid-template-columns: minmax(280px, 900px); gap: 16px; margin-top: 16px; }
   .level { background: #fffdf8; border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
   .level h2 { margin: 0 0 6px; font: 600 1.15rem Georgia, serif; display: flex; justify-content: space-between; align-items: baseline; }
   .level h2 small { font: 13px system-ui; color: var(--soft); }
@@ -68,8 +68,8 @@
 import { PRESETS, SETTING_NOTES, photoToPicture } from './photo.js'
 import { GROUPS } from '../js/pictures.js'
 
-const MAX = 1200 // pixels on the long side, like the other pictures
-const LEVELS = [['easy', 'Easy'], ['cozy', 'Cozy'], ['detailed', 'Detailed']]
+const MAX = 1600 // pixels on the long side: more room for detail than the drawings' 1200
+const LEVELS = [['detailed', 'Detailed']]
 const RANGES = { colors: [3, 40, 1], soften: [0, 14, 1], passes: [1, 3, 1], smallest: [0.00005, 0.006, 0.00005], round: [0, 8, 1], line: [1, 9, 0.5] }
 const $ = (id) => document.getElementById(id)
 let photo = null // { file, info, image: ImageData }

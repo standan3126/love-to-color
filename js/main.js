@@ -1,11 +1,11 @@
-// Love To Color: pick a picture, pick Easy / Cozy / Detailed and Color by Number or Free Color,
+// Love To Color: pick a picture from Easy, Cozy or Detailed, pick Color by Number or Free Color,
 // then tap cells to fill them. Uses GameHub's toolbox for the Exit button, Tap to Start, saving,
 // moving progress and the gentle music.
 import { addExitButton, setupPage, tapToStart, warmOffline } from '/shared/v1/kit.js'
 import { gameStore, makeTransferCode, openBackupFile, readTransferCode, saveBackupFile } from '/shared/v1/save.js'
 import { Sound } from '/shared/v1/sound/index.js'
 import { colorName, CRAYONS, PACKS, WHITE } from './crayons.js'
-import { findPicture, GROUPS, loadCatalog, loadCells, outlineCanvas, previewOf, SIZES } from './pictures.js'
+import { findPicture, GROUPS, loadCatalog, loadCells, outlineCanvas, previewOf, sectionOf, SECTIONS, SIZES, softLines } from './pictures.js'
 import { Stage } from './stage.js'
 import { colorWheel } from './wheel.js'
 
@@ -15,7 +15,7 @@ const MODES = [
   { id: 'free', name: 'Free Color', note: 'Any color in any cell' },
 ]
 const store = gameStore(GAME_ID)
-const settings = { music: true, sounds: true, size: 'cozy', mode: 'number', freeSet: 'crayons', myColors: [], group: 'home', ...store.get('settings', {}) }
+const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, ...store.get('settings', {}) }
 const saveSettings = () => store.set('settings', settings)
 const sound = new Sound({ notes: settings.sounds ? 0.7 : 0, nature: 0, music: 0.45 })
 
@@ -59,12 +59,15 @@ function renderHome() {
     ...saves.map((s) => {
       const card = el('div', { className: 'keep-card' })
       const open = el('button', { type: 'button', className: 'keep-open' })
-      const size = SIZES.find((z) => z.id === s.size)
-      const name = findPicture(s.id).name
+      const item = findPicture(s.id)
+      const name = item.name
+      // Only pictures saved before the sections were at another size; say which.
+      const size = s.size === sectionOf(item).size ? null : SIZES.find((z) => z.id === s.size)?.name
+      const note = [s.mode === 'number' ? 'By Number' : 'Free', size, s.done ? 'Finished' : `${s.percent || 0}%`]
       open.append(
         el('img', { src: s.thumb || '', alt: '' }),
         el('span', { className: 'card-name', textContent: name }),
-        el('span', { className: 'card-note', textContent: `${s.mode === 'number' ? 'By Number' : 'Free'} · ${size?.name} · ${s.done ? 'Finished' : `${s.percent || 0}%`}` }),
+        el('span', { className: 'card-note', textContent: note.filter(Boolean).join(' · ') }),
       )
       open.addEventListener('click', () => openColoring(findPicture(s.id), s.size, s.mode))
       const remove = el('button', { type: 'button', className: 'keep-delete', innerHTML: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>' })
@@ -79,26 +82,44 @@ function renderHome() {
       return card
     }),
   )
-  $('groupChips').replaceChildren(
-    ...GROUPS.map((g) => {
-      const chip = el('button', { type: 'button', className: 'chip', textContent: g.name, role: 'tab' })
-      chip.setAttribute('aria-selected', String(g.id === settings.group))
-      chip.addEventListener('click', () => {
-        settings.group = g.id
+  renderPictures()
+}
+
+// Easy, Cozy and Detailed, then the kinds of picture in the chosen one.
+async function renderPictures() {
+  const catalog = await loadCatalog()
+  const section = SECTIONS.find((x) => x.id === settings.section) || SECTIONS[0]
+  $('sectionTabs').replaceChildren(
+    ...SECTIONS.map((x) => {
+      const tab = el('button', { type: 'button', className: 'section-tab', textContent: x.name, role: 'tab' })
+      tab.setAttribute('aria-selected', String(x === section))
+      tab.addEventListener('click', () => {
+        settings.section = x.id
         saveSettings()
-        renderHome()
+        renderPictures()
+      })
+      return tab
+    }),
+  )
+  const pictures = catalog.filter((p) => p.kind === section.kind)
+  const groups = GROUPS.filter((g) => pictures.some((p) => p.group === g.id))
+  const group = groups.find((g) => g.id === settings.groups[section.id]) || groups[0]
+  $('groupChips').hidden = groups.length < 2
+  $('groupChips').replaceChildren(
+    ...groups.map((g) => {
+      const chip = el('button', { type: 'button', className: 'chip', textContent: g.name, role: 'tab' })
+      chip.setAttribute('aria-selected', String(g === group))
+      chip.addEventListener('click', () => {
+        settings.groups[section.id] = g.id
+        saveSettings()
+        renderPictures()
       })
       return chip
     }),
   )
-  renderGrid()
-}
-
-async function renderGrid() {
-  const catalog = await loadCatalog()
   $('pictureGrid').replaceChildren(
-    ...catalog
-      .filter((p) => p.group === settings.group)
+    ...pictures
+      .filter((p) => p.group === group?.id)
       .map((p) => {
         const card = el('button', { type: 'button', className: 'picture-card' })
         card.append(previewOf(p), el('span', { className: 'card-name', textContent: p.name }))
@@ -111,6 +132,7 @@ async function renderGrid() {
 // --- Setup ---------------------------------------------------------------------------------------
 
 let setupItem = null
+const sizeFor = (item) => sectionOf(item).size
 
 function choiceButtons(host, options, current, onPick) {
   host.replaceChildren(
@@ -132,12 +154,12 @@ function openSetup(item) {
   show('setup')
 }
 
-// The picture exactly as it will be at the chosen size (cells joined, outlines and all).
+// The picture exactly as it will be colored (cells joined, outlines and all).
 let previewTurn = 0
 async function showSizePreview() {
   const turn = ++previewTurn
   const item = setupItem
-  const detail = SIZES.findIndex((z) => z.id === settings.size)
+  const detail = SIZES.findIndex((z) => z.id === sizeFor(item))
   $('setupPreview').classList.add('busy')
   await new Promise((r) => setTimeout(r, 20))
   const canvas = await outlineCanvas(item, detail)
@@ -148,27 +170,22 @@ async function showSizePreview() {
 
 function renderSetupChoices() {
   showSizePreview()
-  choiceButtons($('sizeChoices'), SIZES, settings.size, (id) => {
-    settings.size = id
-    saveSettings()
-    renderSetupChoices()
-  })
   choiceButtons($('modeChoices'), MODES, settings.mode, (id) => {
     settings.mode = id
     saveSettings()
     renderSetupChoices()
   })
-  const existing = store.get(saveKey(setupItem.id, settings.size, settings.mode))
+  const existing = store.get(saveKey(setupItem.id, sizeFor(setupItem), settings.mode))
   $('startColoring').textContent = existing ? (existing.done ? 'Look at it again' : 'Keep coloring') : 'Start coloring'
   $('startOver').hidden = !existing
 }
 
 $('setupBack').addEventListener('click', () => show('home'))
-$('startColoring').addEventListener('click', () => openColoring(setupItem, settings.size, settings.mode))
+$('startColoring').addEventListener('click', () => openColoring(setupItem, sizeFor(setupItem), settings.mode))
 $('startOver').addEventListener('click', () => {
   if (!confirm('Start this picture over? The colors you added will be cleared.')) return
-  store.remove(saveKey(setupItem.id, settings.size, settings.mode))
-  openColoring(setupItem, settings.size, settings.mode)
+  store.remove(saveKey(setupItem.id, sizeFor(setupItem), settings.mode))
+  openColoring(setupItem, sizeFor(setupItem), settings.mode)
 })
 
 // --- Coloring ------------------------------------------------------------------------------------
@@ -189,7 +206,7 @@ async function openColoring(item, size, mode) {
   const cells = await loadCells(item, detail)
   const s = { item, size, mode, cells, history: [], key: saveKey(item.id, size, mode) }
   session = s
-  s.stage = new Stage($('stage'), cells, { onTap: (c) => (mode === 'number' ? tapNumber(c) : tapFree(c)) })
+  s.stage = new Stage($('stage'), cells, { soft: softLines(item, size), onTap: (c) => (mode === 'number' ? tapNumber(c) : tapFree(c)) })
 
   // Color by Number: number the palette colors that are used, in palette order.
   const used = [...new Set(Array.from(cells.target).filter((t) => !cells.blank.has(t)))].sort((a, b) => a - b)
@@ -543,7 +560,7 @@ $('openSettings').addEventListener('click', async () => {
       .map((p) => {
         const li = el('li')
         const by = p.credit.source ? el('a', { href: p.credit.source, target: '_blank', rel: 'noopener', textContent: p.credit.artist }) : p.credit.artist
-        li.append(`${p.name}: ${p.kind === 'photo' ? 'photo' : '“' + p.credit.title + '”'} by `, by, ` (${p.credit.license})`)
+        li.append(`${p.name}: “${p.credit.title}” by `, by, ` (${p.credit.license})`)
         return li
       }),
   )
