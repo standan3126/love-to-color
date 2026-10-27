@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "node tests/serve.mjs",
     "test": "playwright test",
-    "prep-art": "node tools/prep-art.mjs"
+    "prep-art": "node tools/prep-art.mjs",
+    "photos": "node tools/photo-tool.mjs"
   },
   "devDependencies": {
     "@playwright/test": "1.64.1"

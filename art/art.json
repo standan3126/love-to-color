@@ -355,5 +355,148 @@
    "source": "https://openclipart.org/detail/310697",
    "license": "CC0 1.0"
   }
+ },
+ {
+  "id": "photo-fox-in-the-grass",
+  "name": "Fox in the Grass",
+  "group": "animals",
+  "width": 1200,
+  "height": 800,
+  "sizes": {
+   "easy": {
+    "palette": [
+     "#583e2c",
+     "#8b6754",
+     "#c5a08b",
+     "#6d5a1e",
+     "#836139",
+     "#91753a",
+     "#a27a4f",
+     "#1e140e"
+    ]
+   },
+   "cozy": {
+    "palette": [
+     "#372519",
+     "#5a3f32",
+     "#785746",
+     "#845f3c",
+     "#a47d6a",
+     "#cca792",
+     "#5d441d",
+     "#685b17",
+     "#7f6330",
+     "#937d37",
+     "#977640",
+     "#9a724a",
+     "#b4885b",
+     "#140c09"
+    ]
+   },
+   "detailed": {
+    "palette": [
+     "#281a10",
+     "#412c24",
+     "#51331d",
+     "#5e453c",
+     "#6d4c33",
+     "#896247",
+     "#7f6054",
+     "#96653f",
+     "#ac7f5a",
+     "#a7816f",
+     "#cca793",
+     "#443a0f",
+     "#5d530f",
+     "#684b1c",
+     "#7c7124",
+     "#7b652b",
+     "#7d5d34",
+     "#8d6d3b",
+     "#977a3d",
+     "#926d47",
+     "#a5923b",
+     "#a07b4b",
+     "#c89968",
+     "#100906"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Red Fox Sunset (53611202311)",
+   "artist": "USFWSAlaska",
+   "source": "https://commons.wikimedia.org/wiki/File:Red_Fox_Sunset_(53611202311).jpg",
+   "license": "Public domain"
+  }
+ },
+ {
+  "id": "photo-sunset-field",
+  "name": "Sunset Field",
+  "group": "nature",
+  "width": 1200,
+  "height": 800,
+  "sizes": {
+   "easy": {
+    "palette": [
+     "#543b2f",
+     "#7e401a",
+     "#c95215",
+     "#706a1a",
+     "#244316",
+     "#1c2427"
+    ]
+   },
+   "cozy": {
+    "palette": [
+     "#462e25",
+     "#733f22",
+     "#634d3e",
+     "#983b11",
+     "#e46218",
+     "#7f5f18",
+     "#eec154",
+     "#3f5c15",
+     "#7e8317",
+     "#122910",
+     "#21491e",
+     "#146862",
+     "#1b2327"
+    ]
+   },
+   "detailed": {
+    "palette": [
+     "#3a2824",
+     "#4f2e1f",
+     "#652f15",
+     "#51473f",
+     "#853410",
+     "#684e3e",
+     "#7b5035",
+     "#a84113",
+     "#db511a",
+     "#fa7f16",
+     "#5d5519",
+     "#87521b",
+     "#9a7318",
+     "#cda511",
+     "#4e6e19",
+     "#868c17",
+     "#12250d",
+     "#1d390f",
+     "#2b5013",
+     "#164936",
+     "#177d74",
+     "#bcd5d2",
+     "#131511",
+     "#1d262c"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Sunflower field at sunset",
+   "artist": "Summer Stock",
+   "source": "https://commons.wikimedia.org/wiki/File:Sunflower_field_at_sunset.jpg",
+   "license": "CC0 1.0"
+  }
  }
 ]

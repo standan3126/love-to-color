@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Photo to Picture</title>
+<style>
+  :root { --ink: #3b3a34; --soft: #77736a; --line: #e2dccf; --rose: #a8656a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.45 system-ui, sans-serif; color: var(--ink); background: #f8f2e8; }
+  header { padding: 14px 20px; border-bottom: 1px solid var(--line); background: #fffdf8; display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
+  h1 { margin: 0; font: 600 1.4rem Georgia, serif; color: var(--rose); }
+  main { padding: 16px 20px 60px; }
+  .photos { display: flex; gap: 10px; flex-wrap: wrap; }
+  .photos button { border: 2px solid var(--line); border-radius: 12px; padding: 4px; background: #fff; cursor: pointer; }
+  .photos button[aria-pressed='true'] { border-color: var(--rose); }
+  .photos img { display: block; height: 70px; border-radius: 8px; }
+  .levels { display: grid; grid-template-columns: repeat(3, minmax(280px, 1fr)); gap: 16px; margin-top: 16px; }
+  .level { background: #fffdf8; border: 1px solid var(--line); border-radius: 16px; padding: 12px; }
+  .level h2 { margin: 0 0 6px; font: 600 1.15rem Georgia, serif; display: flex; justify-content: space-between; align-items: baseline; }
+  .level h2 small { font: 13px system-ui; color: var(--soft); }
+  .view { position: relative; background: #fff; border-radius: 10px; overflow: hidden; cursor: zoom-in; }
+  .view canvas { display: block; width: 100%; height: auto; }
+  .view.busy::after { content: 'Working…'; position: absolute; inset: 0; display: grid; place-items: center; background: rgba(255,253,248,.75); font-weight: 600; }
+  label.slider { display: grid; grid-template-columns: 92px 1fr 52px; gap: 8px; align-items: center; font-size: 13px; margin: 6px 0; }
+  label.slider span:last-child { text-align: right; font-variant-numeric: tabular-nums; }
+  .hint { color: var(--soft); font-size: 12px; margin: -4px 0 6px 100px; }
+  .swatches { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 8px; }
+  .swatches i { width: 16px; height: 16px; border-radius: 50%; border: 1px solid rgba(0,0,0,.15); }
+  .modes { display: flex; gap: 6px; }
+  .modes button, .add button, .reset { border: 1px solid var(--line); border-radius: 999px; background: #fff; padding: 6px 12px; cursor: pointer; font: inherit; }
+  .modes button[aria-pressed='true'] { background: var(--rose); border-color: var(--rose); color: #fff; }
+  .add { margin-top: 18px; background: #fffdf8; border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 8px; max-width: 760px; }
+  .add input, .add select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; width: 100%; }
+  .add .row { display: grid; grid-template-columns: 140px 1fr; gap: 8px; align-items: center; }
+  .add button.go { background: var(--rose); color: #fff; border-color: var(--rose); font-weight: 600; padding: 10px 18px; justify-self: start; }
+  #status { font-weight: 600; }
+  .zoomed { position: fixed; inset: 0; background: rgba(0,0,0,.8); display: grid; place-items: center; z-index: 9; cursor: zoom-out; }
+  .zoomed canvas { max-width: 96vw; max-height: 96vh; background: #fff; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Photo to Picture</h1>
+  <span>Put photos in <code>love-to-color/private/photos/</code> (never published), pick one, tune each size, then add it to the game.</span>
+</header>
+<main>
+  <div class="photos" id="photos"></div>
+  <p class="modes" id="modes">
+    <button type="button" data-mode="both" aria-pressed="true">Colored with lines</button>
+    <button type="button" data-mode="lines">Lines only (what you color in)</button>
+    <button type="button" data-mode="colors">Colors only</button>
+    <button type="button" data-mode="photo">Original photo</button>
+  </p>
+  <div class="levels" id="levels"></div>
+  <form class="add" id="add">
+    <strong>Add to the game</strong>
+    <div class="row"><span>Name in the game</span><input name="name" required /></div>
+    <div class="row"><span>Group</span><select name="group"></select></div>
+    <div class="row"><span>Photo by</span><input name="artist" placeholder="e.g. USFWS, or Our own photo" /></div>
+    <div class="row"><span>Where it's from</span><input name="source" placeholder="link (leave empty for our own photos)" /></div>
+    <div class="row"><span>License</span><input name="license" placeholder="Public domain, CC0 1.0, or Our own" required /></div>
+    <button class="go" type="submit">Add to game</button>
+    <span id="status"></span>
+  </form>
+</main>
+<script type="module">
+import { PRESETS, SETTING_NOTES, photoToPicture } from './photo.js'
+import { GROUPS } from '../js/pictures.js'
+
+const MAX = 1200 // pixels on the long side, like the other pictures
+const LEVELS = [['easy', 'Easy'], ['cozy', 'Cozy'], ['detailed', 'Detailed']]
+const RANGES = { colors: [3, 40, 1], soften: [0, 14, 1], passes: [1, 3, 1], smallest: [0.00005, 0.006, 0.00005], round: [0, 8, 1], line: [1, 9, 0.5] }
+const $ = (id) => document.getElementById(id)
+let photo = null // { file, info, image: ImageData }
+let mode = 'both'
+const results = {}
+const settings = {}
+
+for (const g of GROUPS) $('add').group.append(new Option(g.name, g.id))
+
+const list = await (await fetch('/photos')).json()
+if (!list.length) $('photos').textContent = 'No photos yet: put some in love-to-color/private/photos/ and reload.'
+for (const item of list) {
+  const b = document.createElement('button')
+  b.type = 'button'
+  b.innerHTML = `<img src="/private/photos/${encodeURIComponent(item.file)}" alt="">`
+  b.title = item.file
+  b.onclick = () => choose(item, b)
+  $('photos').append(b)
+}
+$('modes').onclick = (e) => {
+  const m = e.target.dataset.mode
+  if (!m) return
+  mode = m
+  for (const b of $('modes').children) b.setAttribute('aria-pressed', String(b.dataset.mode === m))
+  for (const [id] of LEVELS) show(id)
+}
+
+async function choose(item, button) {
+  for (const b of $('photos').children) b.setAttribute('aria-pressed', String(b === button))
+  const img = new Image()
+  img.src = `/private/photos/${encodeURIComponent(item.file)}`
+  await img.decode()
+  const k = MAX / Math.max(img.naturalWidth, img.naturalHeight)
+  const w = Math.round(img.naturalWidth * k)
+  const h = Math.round(img.naturalHeight * k)
+  const c = new OffscreenCanvas(w, h).getContext('2d')
+  c.imageSmoothingQuality = 'high'
+  c.drawImage(img, 0, 0, w, h)
+  photo = { ...item, image: c.getImageData(0, 0, w, h), w, h }
+  const f = $('add')
+  f.name.value = item.info?.name || ''
+  f.group.value = item.info?.group || 'nature'
+  f.artist.value = item.info?.credit?.artist || ''
+  f.source.value = item.info?.credit?.source || ''
+  f.license.value = item.info?.credit?.license || ''
+  buildLevels()
+}
+
+function buildLevels() {
+  $('levels').replaceChildren()
+  for (const [id, title] of LEVELS) {
+    settings[id] = { ...PRESETS[id], ...(photo.info?.settings?.[id] || {}) }
+    const box = document.createElement('section')
+    box.className = 'level'
+    box.innerHTML = `<h2>${title} <small id="${id}-count"></small></h2><div class="view" id="${id}-view"><canvas></canvas></div><div class="swatches" id="${id}-sw"></div>`
+    for (const key of Object.keys(RANGES)) {
+      const [min, max, step] = RANGES[key]
+      const row = document.createElement('label')
+      row.className = 'slider'
+      row.innerHTML = `<span>${key[0].toUpperCase() + key.slice(1)}</span><input type="range" min="${min}" max="${max}" step="${step}" value="${settings[id][key]}"><span></span>`
+      const input = row.querySelector('input')
+      const out = row.lastElementChild
+      const label = () => (out.textContent = key === 'smallest' ? `${(settings[id][key] * 100).toFixed(3)}%` : settings[id][key])
+      label()
+      input.oninput = () => {
+        settings[id][key] = Number(input.value)
+        label()
+        later(id)
+      }
+      box.append(row)
+      const hint = document.createElement('div')
+      hint.className = 'hint'
+      hint.textContent = SETTING_NOTES[key]
+      box.append(hint)
+    }
+    const reset = document.createElement('button')
+    reset.type = 'button'
+    reset.className = 'reset'
+    reset.textContent = 'Back to the starting settings'
+    reset.onclick = () => {
+      photo.info = { ...(photo.info || {}), settings: { ...(photo.info?.settings || {}), [id]: {} } }
+      buildLevels()
+    }
+    box.append(reset)
+    box.querySelector('.view').onclick = () => zoom(id)
+    $('levels').append(box)
+    run(id)
+  }
+}
+
+const timers = {}
+function later(id) {
+  clearTimeout(timers[id])
+  timers[id] = setTimeout(() => run(id), 350)
+}
+
+async function run(id) {
+  const view = $(`${id}-view`)
+  view.classList.add('busy')
+  await new Promise((r) => setTimeout(r, 30))
+  const t0 = performance.now()
+  results[id] = photoToPicture(photo.image, settings[id])
+  const cells = countCells(results[id].lines)
+  $(`${id}-count`).textContent = `${results[id].palette.length} colors · about ${cells} cells · ${((performance.now() - t0) / 1000).toFixed(1)}s`
+  $(`${id}-sw`).replaceChildren(...results[id].palette.map((hex) => Object.assign(document.createElement('i'), { title: hex, style: `background:${hex}` })))
+  view.classList.remove('busy')
+  show(id)
+}
+
+// Same rule as the game: white areas between dark lines are cells.
+function countCells(lines) {
+  const { width: w, height: h, data } = lines
+  const n = w * h
+  const open = new Uint8Array(n)
+  for (let p = 0; p < n; p++) open[p] = data[p * 4] > 145 ? 1 : 0
+  const seen = new Uint8Array(n)
+  const stack = new Int32Array(n)
+  let cells = 0
+  for (let s = 0; s < n; s++) {
+    if (!open[s] || seen[s]) continue
+    let top = 0
+    let size = 0
+    stack[top++] = s
+    seen[s] = 1
+    while (top) {
+      const p = stack[--top]
+      size++
+      const x = p % w
+      for (const q of [x > 0 ? p - 1 : -1, x < w - 1 ? p + 1 : -1, p - w, p + w]) if (q >= 0 && q < n && open[q] && !seen[q]) (seen[q] = 1), (stack[top++] = q)
+    }
+    if (size >= 14) cells++
+  }
+  return cells
+}
+
+function draw(id, canvas) {
+  const r = results[id]
+  if (!r) return
+  canvas.width = photo.w
+  canvas.height = photo.h
+  const g = canvas.getContext('2d')
+  if (mode === 'photo') return g.putImageData(photo.image, 0, 0)
+  if (mode === 'lines') return g.putImageData(r.lines, 0, 0)
+  g.putImageData(r.colors, 0, 0)
+  if (mode === 'both') {
+    // Lines over colors: darken by the line image.
+    const c = new OffscreenCanvas(photo.w, photo.h)
+    c.getContext('2d').putImageData(r.lines, 0, 0)
+    g.globalCompositeOperation = 'multiply'
+    g.drawImage(c, 0, 0)
+  }
+}
+
+function show(id) {
+  const canvas = $(`${id}-view`)?.querySelector('canvas')
+  if (canvas) draw(id, canvas)
+}
+
+function zoom(id) {
+  const layer = document.createElement('div')
+  layer.className = 'zoomed'
+  const c = document.createElement('canvas')
+  draw(id, c)
+  layer.append(c)
+  layer.onclick = () => layer.remove()
+  document.body.append(layer)
+}
+
+const toDataUrl = async (img) => {
+  const c = new OffscreenCanvas(img.width, img.height)
+  c.getContext('2d').putImageData(img, 0, 0)
+  const blob = await c.convertToBlob({ type: 'image/png' })
+  return new Promise((r) => {
+    const f = new FileReader()
+    f.onload = () => r(f.result)
+    f.readAsDataURL(blob)
+  })
+}
+
+$('add').onsubmit = async (e) => {
+  e.preventDefault()
+  if (!photo || LEVELS.some(([id]) => !results[id])) return
+  const f = $('add')
+  $('status').textContent = 'Adding…'
+  const body = {
+    file: photo.file,
+    name: f.name.value.trim(),
+    group: f.group.value,
+    width: photo.w,
+    height: photo.h,
+    credit: { title: photo.info?.credit?.title || f.name.value.trim(), artist: f.artist.value.trim(), source: f.source.value.trim(), license: f.license.value.trim() },
+    settings,
+    sizes: {},
+  }
+  for (const [id] of LEVELS) body.sizes[id] = { palette: results[id].palette, lines: await toDataUrl(results[id].lines), colors: await toDataUrl(results[id].colors) }
+  const res = await fetch('/add', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  $('status').textContent = res.ok ? `Added as “${body.name}”. Run the tests, then publish (or ask Claude to).` : `Couldn't add it: ${await res.text()}`
+}
+</script>
+</body>
+</html>

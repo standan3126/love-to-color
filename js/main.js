@@ -542,7 +542,8 @@ $('openSettings').addEventListener('click', async () => {
       .filter((p) => p.credit)
       .map((p) => {
         const li = el('li')
-        li.append(`${p.name}: “${p.credit.title}” by `, el('a', { href: p.credit.source, target: '_blank', rel: 'noopener', textContent: p.credit.artist }))
+        const by = p.credit.source ? el('a', { href: p.credit.source, target: '_blank', rel: 'noopener', textContent: p.credit.artist }) : p.credit.artist
+        li.append(`${p.name}: ${p.kind === 'photo' ? 'photo' : '“' + p.credit.title + '”'} by `, by, ` (${p.credit.license})`)
         return li
       }),
   )

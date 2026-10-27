@@ -66,8 +66,17 @@ export const PACKS = [
   { id: 'cottage', name: 'Cottage', colors: pick('Dusty Rose', 'Sage', 'Moss', 'Wheat', 'Sand', 'Caramel', 'Cornflower', 'Denim', 'Stone Gray', 'Cream') },
 ]
 
-// The name of a color: the crayon's name, or a friendly description for a mixed one.
+// The name of a color: the crayon's name, or the name of the closest crayon for any other color
+// (a photo's colors, or one made on the color wheel).
 export function colorName(hex) {
-  const c = CRAYONS.find((k) => k.hex === hex.toLowerCase())
-  return c ? c.name : 'Your color'
+  const v = parseInt(hex.slice(1), 16)
+  const r = v >> 16, g = (v >> 8) & 255, b = v & 255
+  let best = CRAYONS[0]
+  let bestD = Infinity
+  for (const c of CRAYONS) {
+    const w = parseInt(c.hex.slice(1), 16)
+    const d = 2 * (r - (w >> 16)) ** 2 + 4 * (g - ((w >> 8) & 255)) ** 2 + 3 * (b - (w & 255)) ** 2
+    if (d < bestD) (bestD = d), (best = c)
+  }
+  return best.name
 }

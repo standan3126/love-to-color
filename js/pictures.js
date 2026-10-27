@@ -1,5 +1,7 @@
-// The picture list: drawings prepared from Openclipart (art/art.json) and patterns drawn in
-// code (patterns.js), and how each becomes cells at Easy, Cozy and Detailed.
+// The picture list: drawings prepared from Openclipart and pictures made from photos (both in
+// art/art.json), and patterns drawn in code (patterns.js), and how each becomes cells at Easy,
+// Cozy and Detailed. Drawings have one set of outlines whose small cells join up at Easy and Cozy;
+// photo pictures have their own outlines and colors for each size (tools/photo-tool).
 import { buildCells } from './engine.js'
 import { drawPattern, PATTERNS, SIZE } from './patterns.js'
 
@@ -16,6 +18,7 @@ export const GROUPS = [
   { id: 'home', name: 'Cottages' },
   { id: 'garden', name: 'Gardens' },
   { id: 'animals', name: 'Animals' },
+  { id: 'nature', name: 'Nature' },
   { id: 'mandala', name: 'Mandalas' },
   { id: 'fractal', name: 'Fractals' },
   { id: 'tessellation', name: 'Tessellations' },
@@ -27,7 +30,7 @@ export async function loadCatalog() {
   if (catalog) return catalog
   const art = await (await fetch('art/art.json')).json()
   catalog = [
-    ...art.map((a) => ({ ...a, kind: 'art' })),
+    ...art.map((a) => ({ ...a, kind: a.sizes ? 'photo' : 'art' })),
     ...PATTERNS.map((p) => ({ id: p.id, name: p.name, group: p.kind, kind: 'pattern', pattern: p, width: SIZE, height: SIZE })),
   ]
   return catalog
@@ -37,9 +40,9 @@ export const findPicture = (id) => catalog?.find((p) => p.id === id)
 
 // A small uncolored preview: an <img> for drawings, a canvas for patterns.
 export function previewOf(item, px = 220) {
-  if (item.kind === 'art') {
+  if (item.kind !== 'pattern') {
     const img = new Image()
-    img.src = `art/${item.id}/lines.png`
+    img.src = item.kind === 'photo' ? `art/${item.id}/cozy-lines.png` : `art/${item.id}/lines.png`
     img.alt = ''
     img.loading = 'lazy'
     return img
@@ -64,6 +67,14 @@ async function imageData(src, w, h) {
 
 // Everything the coloring screen needs for one picture at one size.
 export async function loadCells(item, detail) {
+  if (item.kind === 'photo') {
+    const size = SIZES[detail].id
+    const [lines, colors] = await Promise.all([
+      imageData(`art/${item.id}/${size}-lines.png`, item.width, item.height),
+      imageData(`art/${item.id}/${size}-colors.png`, item.width, item.height),
+    ])
+    return buildCells({ lines, colors, palette: item.sizes[size].palette, blank: [] })
+  }
   if (item.kind === 'art') {
     const [lines, colors] = await Promise.all([
       imageData(`art/${item.id}/lines.png`, item.width, item.height),

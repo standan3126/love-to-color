@@ -29,6 +29,16 @@ crayon colors for coloring (`tools/prep-art.mjs`); the originals are in `tools/a
 | Tropical Fish | [cartoon tropical fish](https://openclipart.org/detail/263088) | cirenovy | CC0 1.0 |
 | Snail | [snail](https://openclipart.org/detail/310697) | Mahua_Sarkar | CC0 1.0 |
 
+## Photos
+
+These pictures were made from photos that are public domain, CC0, or our own, turned into
+outlines and colors by `tools/photo-tool`. The photos themselves are not part of the game.
+
+| In the game | Photo | By | License |
+|---|---|---|---|
+| Fox in the Grass | [Red Fox Sunset (53611202311)](https://commons.wikimedia.org/wiki/File:Red_Fox_Sunset_%2853611202311%29.jpg) | USFWSAlaska | Public domain |
+| Sunset Field | [Sunflower field at sunset](https://commons.wikimedia.org/wiki/File:Sunflower_field_at_sunset.jpg) | Summer Stock | CC0 1.0 |
+
 ## Sound
 
 Music and sounds are generated live by GameHub's toolbox (`/shared/v1/sound/`); no recordings are used.

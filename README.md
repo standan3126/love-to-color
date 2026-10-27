@@ -13,6 +13,12 @@ Live at https://standan3126.github.io/love-to-color/ (inside GameHub).
   `tools/art-src/` into `art/<id>/lines.png` (outlines) and `art/<id>/colors.png` (the
   Color by Number answer key, in named crayon colors).
 - **Patterns** drawn in code: mandalas, fractals and tessellations (`js/patterns.js`).
+- **Photos** turned into pictures with the photo tool: `npm run photos`, then open
+  http://localhost:4191/tools/photo-tool.html. Photos go in `private/photos/` (never published).
+  Each size gets its own look (Easy: few colors, strong softening, thick lines; Detailed: many
+  colors, light softening, thin lines), tunable with sliders. **Add to game** writes
+  `art/<id>/<size>-lines.png` and `<size>-colors.png`, `art/art.json` and `CREDITS.md`. Only
+  photos that are public domain, CC0 or our own; the photo itself never goes in the game.
 
 Every picture becomes cells in the browser (`js/engine.js`): the white areas between the lines are
 found, tiny ones join a neighbor at Easy and Cozy, and each cell gets its number from the colored
@@ -34,7 +40,7 @@ Add new ones instead.
 | `js/crayons.js` | The crayon box and palette packs |
 | `js/wheel.js` | The color wheel for making your own colors |
 | `art/` | Prepared drawings and `art.json` |
-| `tools/` | Picture preparation and preview pages (not published) |
+| `tools/` | Drawing and photo preparation, preview pages, credits (not published) |
 | `tests/` | Browser tests and a local server |
 
 GameHub's toolbox (`/shared/v1/`) provides the Exit button, Tap to Start, saving, transfer codes,
