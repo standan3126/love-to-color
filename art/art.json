@@ -1,0 +1,359 @@
+[
+ {
+  "id": "cottage",
+  "name": "Little Cottage",
+  "group": "home",
+  "width": 1200,
+  "height": 928,
+  "palette": [
+   "#efdcb0",
+   "#f9c09a",
+   "#b8b8b8",
+   "#d6b4d9",
+   "#4a4643",
+   "#c48a4a",
+   "#8a8580",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "cottage",
+   "artist": "sammo241",
+   "source": "https://openclipart.org/detail/172593",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "crooked-cottage",
+  "name": "Crooked Cottage",
+  "group": "home",
+  "width": 1200,
+  "height": 1090,
+  "palette": [
+   "#7d4a7a",
+   "#c9a227",
+   "#8a8580",
+   "#d6b4d9",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Witch's cottage",
+   "artist": "lemmling",
+   "source": "https://openclipart.org/detail/17709",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "mushroom-house",
+  "name": "Mushroom House",
+  "group": "home",
+  "width": 1200,
+  "height": 1118,
+  "palette": [
+   "#d64545",
+   "#a8324a",
+   "#8a8580",
+   "#6b4430",
+   "#b8b8b8",
+   "#fbf3dc",
+   "#2e2a29",
+   "#4a4643",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Mushroom house",
+   "artist": "lemmling",
+   "source": "https://openclipart.org/detail/17760",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "orange-mushroom",
+  "name": "Orange Mushroom House",
+  "group": "home",
+  "width": 1200,
+  "height": 1104,
+  "palette": [
+   "#f39233",
+   "#d64545",
+   "#f6a96b",
+   "#9cb89a",
+   "#4a4643",
+   "#2e2a29",
+   "#6b4430",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Orange mushroom house",
+   "artist": "Pippi2011",
+   "source": "https://openclipart.org/detail/183884",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "snail-house",
+  "name": "Snail and House",
+  "group": "home",
+  "width": 1200,
+  "height": 800,
+  "palette": [
+   "#a7cf5a",
+   "#a8324a",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Snail and House - Colour Remix",
+   "artist": "j4p4n",
+   "source": "https://openclipart.org/detail/332675",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "lighthouse",
+  "name": "Lighthouse",
+  "group": "home",
+  "width": 1090,
+  "height": 1200,
+  "palette": [
+   "#efdcb0",
+   "#f8e45c",
+   "#fbf3dc",
+   "#c86b4a",
+   "#6b4430",
+   "#2e2a29",
+   "#a8324a",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Lighthouse",
+   "artist": "davidblyons",
+   "source": "https://openclipart.org/detail/279677",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "flower-meadow",
+  "name": "Flower Meadow",
+  "group": "garden",
+  "width": 900,
+  "height": 1200,
+  "palette": [
+   "#a3d9e0",
+   "#ef6f7a",
+   "#8a63c8",
+   "#3fa47f",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Cartoon Nature Scene",
+   "artist": "j4p4n",
+   "source": "https://openclipart.org/detail/302561",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "watering-can",
+  "name": "Watering Can",
+  "group": "garden",
+  "width": 1200,
+  "height": 1117,
+  "palette": [
+   "#2f6b45",
+   "#7a7d3a",
+   "#a7cf5a",
+   "#6f8f3c",
+   "#fbf3dc",
+   "#f6c443",
+   "#f39233",
+   "#6a8fd8",
+   "#c9a227",
+   "#d64545",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Watering Can with Happy Flower",
+   "artist": "j4p4n",
+   "source": "https://openclipart.org/detail/348882",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "rabbit",
+  "name": "Bunny",
+  "group": "animals",
+  "width": 1200,
+  "height": 1200,
+  "palette": [
+   "#f6a96b",
+   "#c98b8b",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Rabbit",
+   "artist": "Mahua_Sarkar",
+   "source": "https://openclipart.org/detail/281451",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "puppy",
+  "name": "Puppy",
+  "group": "animals",
+  "width": 1200,
+  "height": 1200,
+  "palette": [
+   "#6b4430",
+   "#c48a4a",
+   "#fbf3dc",
+   "#c98b8b",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Cute Cartoon Dog",
+   "artist": "teck5",
+   "source": "https://openclipart.org/detail/352348",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "owl",
+  "name": "Bright Owl",
+  "group": "animals",
+  "width": 1200,
+  "height": 1200,
+  "palette": [
+   "#f39233",
+   "#d64545",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Owl 4",
+   "artist": "j4p4n",
+   "source": "https://openclipart.org/detail/299769",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "sleepy-owl",
+  "name": "Sleepy Owl",
+  "group": "animals",
+  "width": 1200,
+  "height": 1177,
+  "palette": [
+   "#6b4430",
+   "#a0613b",
+   "#b8b8b8",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Cartoon owl - asleep",
+   "artist": "The_Martin",
+   "source": "https://openclipart.org/detail/266931",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "fox",
+  "name": "Happy Fox",
+  "group": "animals",
+  "width": 1200,
+  "height": 1200,
+  "palette": [
+   "#f6a96b",
+   "#e07a2f",
+   "#b8b8b8",
+   "#d64545",
+   "#f8e45c",
+   "#fbf3dc",
+   "#2e2a29",
+   "#6b4430",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Happy fox",
+   "artist": "molumen",
+   "source": "https://openclipart.org/detail/342765",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "butterfly",
+  "name": "Butterfly",
+  "group": "animals",
+  "width": 849,
+  "height": 1200,
+  "palette": [
+   "#f4b6c2",
+   "#e57a8a",
+   "#d64545",
+   "#f39233",
+   "#a8324a",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Cute butterfly",
+   "artist": "Susa",
+   "source": "https://openclipart.org/detail/261109",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "pig",
+  "name": "Smiling Pig",
+  "group": "animals",
+  "width": 1200,
+  "height": 933,
+  "palette": [
+   "#f4b6c2",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "Smiling Pig",
+   "artist": "abear",
+   "source": "https://openclipart.org/detail/314941",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "fish",
+  "name": "Tropical Fish",
+  "group": "animals",
+  "width": 1200,
+  "height": 941,
+  "palette": [
+   "#f8e45c",
+   "#7a7d3a",
+   "#2e2a29",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "cartoon tropical fish",
+   "artist": "cirenovy",
+   "source": "https://openclipart.org/detail/263088",
+   "license": "CC0 1.0"
+  }
+ },
+ {
+  "id": "snail",
+  "name": "Snail",
+  "group": "animals",
+  "width": 1200,
+  "height": 756,
+  "palette": [
+   "#f6c443",
+   "#ffffff"
+  ],
+  "credit": {
+   "title": "snail",
+   "artist": "Mahua_Sarkar",
+   "source": "https://openclipart.org/detail/310697",
+   "license": "CC0 1.0"
+  }
+ }
+]

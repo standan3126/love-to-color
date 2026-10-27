@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Love To Color</title>
+    <meta name="description" content="Tap to fill: calm coloring by number or in your own colors." />
+    <meta name="theme-color" content="#f4efe4" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="stylesheet" href="/shared/v1/kit.css" />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <!-- Home: pictures in progress, then every picture to start -->
+    <main id="home" class="screen">
+      <header class="home-head">
+        <h1>Love To Color</h1>
+        <button type="button" class="icon-button" id="openSettings" aria-label="Settings">⚙︎</button>
+      </header>
+      <section id="keepSection" hidden>
+        <h2>Keep coloring</h2>
+        <div id="keepList" class="keep-list"></div>
+      </section>
+      <section>
+        <h2>Start a new picture</h2>
+        <div id="groupChips" class="chips" role="tablist"></div>
+        <div id="pictureGrid" class="picture-grid"></div>
+      </section>
+    </main>
+
+    <!-- Setup: size and way of coloring for the chosen picture -->
+    <main id="setup" class="screen" hidden>
+      <header class="bar">
+        <button type="button" class="text-button" id="setupBack">‹ Pictures</button>
+      </header>
+      <div class="setup-body">
+        <div id="setupPreview" class="setup-preview"></div>
+        <h1 id="setupName"></h1>
+        <h2>How big are the cells?</h2>
+        <div id="sizeChoices" class="choices three"></div>
+        <h2>How would you like to color?</h2>
+        <div id="modeChoices" class="choices"></div>
+        <button type="button" class="button big" id="startColoring">Start coloring</button>
+        <button type="button" class="text-button" id="startOver" hidden>Start this one over</button>
+      </div>
+    </main>
+
+    <!-- Coloring -->
+    <main id="coloring" class="screen coloring" hidden>
+      <header class="bar">
+        <button type="button" class="text-button" id="colorBack">‹ Pictures</button>
+        <div class="bar-title"><span id="colorName"></span><small id="colorProgress"></small></div>
+        <button type="button" class="icon-button" id="undo" aria-label="Undo" hidden>↶</button>
+        <button type="button" class="icon-button" id="savePhoto" aria-label="Save to Photos">⤓</button>
+      </header>
+      <div class="stage-wrap">
+        <div id="stage" class="stage"></div>
+        <div class="zoom-buttons">
+          <button type="button" class="icon-button" id="findCell" aria-label="Find a cell to color" hidden>⌕</button>
+          <button type="button" class="icon-button" id="zoomOut" aria-label="Zoom out">−</button>
+          <button type="button" class="icon-button" id="zoomFit" aria-label="Whole picture">⤢</button>
+          <button type="button" class="icon-button" id="zoomIn" aria-label="Zoom in">+</button>
+        </div>
+        <div id="preparing" class="preparing">Getting your picture ready…</div>
+      </div>
+      <footer class="palette-panel">
+        <div id="setChips" class="chips small" hidden></div>
+        <div id="colorLabel" class="color-label"></div>
+        <div id="swatches" class="swatches"></div>
+      </footer>
+    </main>
+
+    <!-- Make your own color -->
+    <div id="wheelSheet" class="sheet" hidden>
+      <div class="sheet-card">
+        <header class="sheet-head"><h2>Make your own color</h2><button type="button" class="icon-button" data-close aria-label="Close">✕</button></header>
+        <div id="wheelHost"></div>
+        <p class="soft">Or tap any crayon in the Crayons box, then <strong>★ Keep</strong> to add it here.</p>
+      </div>
+    </div>
+
+    <!-- Finished -->
+    <div id="doneSheet" class="sheet" hidden>
+      <div class="sheet-card center">
+        <h2>Beautiful!</h2>
+        <div id="donePicture" class="done-picture"></div>
+        <p class="soft">Your picture is saved in Keep coloring.</p>
+        <button type="button" class="button" id="doneSave">Save to Photos</button>
+        <button type="button" class="text-button" id="doneHome">Back to pictures</button>
+        <button type="button" class="text-button" data-close>Keep looking</button>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div id="settingsSheet" class="sheet" hidden>
+      <div class="sheet-card">
+        <header class="sheet-head"><h2>Settings</h2><button type="button" class="icon-button" data-close aria-label="Close">✕</button></header>
+        <label class="toggle"><input type="checkbox" id="musicToggle" /> Gentle music</label>
+        <label class="toggle"><input type="checkbox" id="soundToggle" /> Coloring sounds</label>
+        <h3>Move your pictures</h3>
+        <p class="soft">To another phone, or into GameHub on this one.</p>
+        <div class="row">
+          <button type="button" class="button small" id="makeCode">Copy a code</button>
+          <button type="button" class="button small" id="enterCode">Paste a code</button>
+        </div>
+        <textarea id="moveCode" class="move-code" rows="3" hidden></textarea>
+        <button type="button" class="button small" id="useCode" hidden>Use this code</button>
+        <div class="row">
+          <button type="button" class="button small" id="saveFile">Save a backup file</button>
+          <button type="button" class="button small" id="openFile">Open a backup file</button>
+        </div>
+        <p id="moveNote" class="soft"></p>
+        <h3>Picture credits</h3>
+        <p class="soft">Drawings from <a href="https://openclipart.org" target="_blank" rel="noopener">Openclipart</a>, shared as public domain (CC0). Thank you to the artists:</p>
+        <ul id="credits" class="credits"></ul>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+    <script type="module" src="js/main.js"></script>
+  </body>
+</html>

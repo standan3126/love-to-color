@@ -1,0 +1,47 @@
+# Publishes Love To Color to GitHub Pages (standan3126.github.io/love-to-color/) on every push to
+# main. No build step: the site is the files themselves, minus tools and tests, plus a list of
+# every file so GameHub can save the whole game for offline play.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check every script parses
+        run: for f in js/*.js; do node --check "$f"; done
+      - name: Gather the site
+        run: |
+          mkdir _site
+          cp -r index.html css js art CREDITS.md _site/
+          cd _site
+          find . -type f ! -name offline-files.json ! -name CREDITS.md | sed 's|^\./||' | sort \
+            | awk 'BEGIN { printf "[" } { printf "%s\"/love-to-color/%s\"", (NR > 1 ? "," : ""), ($0 == "index.html" ? "" : $0) } END { print "]" }' > offline-files.json
+          cat offline-files.json | head -c 300
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

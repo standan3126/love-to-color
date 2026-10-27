@@ -1,0 +1,155 @@
+[
+ {
+  "id": "cottage",
+  "name": "Little Cottage",
+  "group": "home",
+  "source": "https://openclipart.org/detail/172593",
+  "title": "cottage",
+  "artist": "sammo241",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "crooked-cottage",
+  "name": "Crooked Cottage",
+  "group": "home",
+  "source": "https://openclipart.org/detail/17709",
+  "title": "Witch's cottage",
+  "artist": "lemmling",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "mushroom-house",
+  "name": "Mushroom House",
+  "group": "home",
+  "source": "https://openclipart.org/detail/17760",
+  "title": "Mushroom house",
+  "artist": "lemmling",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "orange-mushroom",
+  "name": "Orange Mushroom House",
+  "group": "home",
+  "source": "https://openclipart.org/detail/183884",
+  "title": "Orange mushroom house",
+  "artist": "Pippi2011",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "snail-house",
+  "name": "Snail and House",
+  "group": "home",
+  "source": "https://openclipart.org/detail/332675",
+  "title": "Snail and House - Colour Remix",
+  "artist": "j4p4n",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "lighthouse",
+  "name": "Lighthouse",
+  "group": "home",
+  "source": "https://openclipart.org/detail/279677",
+  "title": "Lighthouse",
+  "artist": "davidblyons",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "flower-meadow",
+  "name": "Flower Meadow",
+  "group": "garden",
+  "source": "https://openclipart.org/detail/302561",
+  "title": "Cartoon Nature Scene",
+  "artist": "j4p4n",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "watering-can",
+  "name": "Watering Can",
+  "group": "garden",
+  "source": "https://openclipart.org/detail/348882",
+  "title": "Watering Can with Happy Flower",
+  "artist": "j4p4n",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "rabbit",
+  "name": "Bunny",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/281451",
+  "title": "Rabbit",
+  "artist": "Mahua_Sarkar",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "puppy",
+  "name": "Puppy",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/352348",
+  "title": "Cute Cartoon Dog",
+  "artist": "teck5",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "owl",
+  "name": "Bright Owl",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/299769",
+  "title": "Owl 4",
+  "artist": "j4p4n",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "sleepy-owl",
+  "name": "Sleepy Owl",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/266931",
+  "title": "Cartoon owl - asleep",
+  "artist": "The_Martin",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "fox",
+  "name": "Happy Fox",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/342765",
+  "title": "Happy fox",
+  "artist": "molumen",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "butterfly",
+  "name": "Butterfly",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/261109",
+  "title": "Cute butterfly",
+  "artist": "Susa",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "pig",
+  "name": "Smiling Pig",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/314941",
+  "title": "Smiling Pig",
+  "artist": "abear",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "fish",
+  "name": "Tropical Fish",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/263088",
+  "title": "cartoon tropical fish",
+  "artist": "cirenovy",
+  "license": "CC0 1.0"
+ },
+ {
+  "id": "snail",
+  "name": "Snail",
+  "group": "animals",
+  "source": "https://openclipart.org/detail/310697",
+  "title": "snail",
+  "artist": "Mahua_Sarkar",
+  "license": "CC0 1.0"
+ }
+]
