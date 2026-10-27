@@ -173,3 +173,50 @@ test('pictures move with a code', async ({ page, context }) => {
   await page.locator('#useCode').click()
   await expect(page.locator('.keep-card')).toHaveCount(1)
 })
+
+test('in an iPhone app with a solid top bar, the colors sit fully on screen', async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, 'standalone', { get: () => true }))
+  await start(page)
+  expect(await page.evaluate(() => document.documentElement.classList.contains('ios-solid-bar'))).toBe(true)
+  await openPicture(page, 'Mandalas', 'Garden Mandala', 'Easy', 'Color by Number')
+  const panel = await page.locator('.palette-panel').boundingBox()
+  const height = await page.evaluate(() => innerHeight)
+  expect(panel.y + panel.height).toBeLessThanOrEqual(height + 1)
+  const swatch = await page.locator('.swatch').first().boundingBox()
+  // At least 30px between the colors and the bottom edge (the home bar lives there).
+  expect(height - (swatch.y + swatch.height)).toBeGreaterThanOrEqual(30)
+})
+
+test('a started picture can be deleted from Keep coloring', async ({ page }) => {
+  await start(page)
+  await openPicture(page, 'Animals', 'Snail', 'Easy', 'Free Color')
+  await tapCell(page, 1)
+  await page.locator('#colorBack').click()
+  await expect(page.locator('.keep-card')).toHaveCount(1)
+  page.once('dialog', (d) => d.accept())
+  await page.getByRole('button', { name: 'Delete Snail' }).click()
+  await expect(page.locator('#keepSection')).toBeHidden()
+  expect(await page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith('love-to-color:pic:')).length)).toBe(0)
+})
+
+test('setup shows the picture at the size being chosen', async ({ page }) => {
+  await start(page)
+  await page.getByRole('tab', { name: 'Tessellations' }).click()
+  await page.locator('.picture-card', { hasText: 'Fish Scales' }).click()
+  const ink = async () => {
+    await expect(page.locator('#setupPreview')).not.toHaveClass(/busy/)
+    return page.evaluate(() => {
+      const c = document.querySelector('#setupPreview canvas')
+      const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data
+      let dark = 0
+      for (let i = 0; i < d.length; i += 4) if (d[i] < 128) dark++
+      return dark
+    })
+  }
+  await page.getByRole('radio', { name: /Easy/ }).click()
+  const easy = await ink()
+  await page.getByRole('radio', { name: /Detailed/ }).click()
+  const detailed = await ink()
+  // A different drawing (more, smaller cells), not the same preview.
+  expect(Math.abs(detailed - easy)).toBeGreaterThan(easy * 0.05)
+})

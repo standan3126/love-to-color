@@ -14,8 +14,8 @@
     <!-- Home: pictures in progress, then every picture to start -->
     <main id="home" class="screen">
       <header class="home-head">
-        <h1>Love To Color</h1>
-        <button type="button" class="icon-button" id="openSettings" aria-label="Settings">⚙︎</button>
+        <h1 class="rainbow" aria-label="Love To Color"><span aria-hidden="true"><span>L</span><span>o</span><span>v</span><span>e</span> <span>T</span><span>o</span> <span>C</span><span>o</span><span>l</span><span>o</span><span>r</span></span></h1>
+        <button type="button" class="icon-button" id="openSettings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.7 7.7 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.7 7.7 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.7 7.7 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
       </header>
       <section id="keepSection" hidden>
         <h2>Keep coloring</h2>
@@ -50,16 +50,16 @@
       <header class="bar">
         <button type="button" class="text-button" id="colorBack">‹ Pictures</button>
         <div class="bar-title"><span id="colorName"></span><small id="colorProgress"></small></div>
-        <button type="button" class="icon-button" id="undo" aria-label="Undo" hidden>↶</button>
-        <button type="button" class="icon-button" id="savePhoto" aria-label="Save to Photos">⤓</button>
+        <button type="button" class="icon-button" id="undo" aria-label="Undo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
+        <button type="button" class="icon-button" id="savePhoto" aria-label="Save to Photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
       </header>
       <div class="stage-wrap">
         <div id="stage" class="stage"></div>
         <div class="zoom-buttons">
-          <button type="button" class="icon-button" id="findCell" aria-label="Find a cell to color" hidden>⌕</button>
-          <button type="button" class="icon-button" id="zoomOut" aria-label="Zoom out">−</button>
-          <button type="button" class="icon-button" id="zoomFit" aria-label="Whole picture">⤢</button>
-          <button type="button" class="icon-button" id="zoomIn" aria-label="Zoom in">+</button>
+          <button type="button" class="icon-button" id="findCell" aria-label="Find a cell to color" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></button>
+          <button type="button" class="icon-button" id="zoomOut" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
+          <button type="button" class="icon-button" id="zoomFit" aria-label="Whole picture"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+          <button type="button" class="icon-button" id="zoomIn" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg></button>
         </div>
         <div id="preparing" class="preparing">Getting your picture ready…</div>
       </div>
@@ -73,7 +73,7 @@
     <!-- Make your own color -->
     <div id="wheelSheet" class="sheet" hidden>
       <div class="sheet-card">
-        <header class="sheet-head"><h2>Make your own color</h2><button type="button" class="icon-button" data-close aria-label="Close">✕</button></header>
+        <header class="sheet-head"><h2>Make your own color</h2><button type="button" class="icon-button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
         <div id="wheelHost"></div>
         <p class="soft">Or tap any crayon in the Crayons box, then <strong>★ Keep</strong> to add it here.</p>
       </div>
@@ -94,7 +94,7 @@
     <!-- Settings -->
     <div id="settingsSheet" class="sheet" hidden>
       <div class="sheet-card">
-        <header class="sheet-head"><h2>Settings</h2><button type="button" class="icon-button" data-close aria-label="Close">✕</button></header>
+        <header class="sheet-head"><h2>Settings</h2><button type="button" class="icon-button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
         <label class="toggle"><input type="checkbox" id="musicToggle" /> Gentle music</label>
         <label class="toggle"><input type="checkbox" id="soundToggle" /> Coloring sounds</label>
         <h3>Move your pictures</h3>

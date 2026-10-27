@@ -15,7 +15,10 @@ const TAP_TIME = 600 // ms
 const MAX_ZOOM = 14 // times the fitted size
 const INK = [43, 38, 34]
 const PAPER = [255, 255, 255]
-const TINT = [228, 222, 210] // unfilled cells of the chosen number
+// Unfilled cells of the chosen number get soft stripes, easy to spot on white paper.
+const STRIPE_A = [184, 200, 222]
+const STRIPE_B = [222, 230, 241]
+const STRIPE = 7 // stripe width, in picture pixels
 
 export class Stage {
   constructor(host, cells, { onTap }) {
@@ -72,13 +75,26 @@ export class Stage {
 
   paint(cell) {
     const { cellStart, cellPixels, box } = this.cells
-    const rgb = this.colors[cell] ? hexToRgb(this.colors[cell]) : this.tinted[cell] ? TINT : PAPER
     const d = this.fill.data
-    for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
-      const k = cellPixels[i] * 4
-      d[k] = rgb[0]
-      d[k + 1] = rgb[1]
-      d[k + 2] = rgb[2]
+    if (!this.colors[cell] && this.tinted[cell]) {
+      const w = this.cells.width
+      for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
+        const p = cellPixels[i]
+        const x = p % w
+        const rgb = Math.floor((x + (p - x) / w) / STRIPE) % 2 ? STRIPE_A : STRIPE_B
+        const k = p * 4
+        d[k] = rgb[0]
+        d[k + 1] = rgb[1]
+        d[k + 2] = rgb[2]
+      }
+    } else {
+      const rgb = this.colors[cell] ? hexToRgb(this.colors[cell]) : PAPER
+      for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
+        const k = cellPixels[i] * 4
+        d[k] = rgb[0]
+        d[k + 1] = rgb[1]
+        d[k + 2] = rgb[2]
+      }
     }
     const b = cell * 4
     this.markDirty(box[b], box[b + 1], box[b + 2], box[b + 3])
@@ -91,14 +107,28 @@ export class Stage {
   }
 
   // The whole picture at full size (for saving to Photos), or small (for the gallery).
+  // Only the colors put in: no highlight stripes.
   snapshot(maxSide = 0) {
-    this.flush()
-    const { width: w, height: h } = this.cells
+    const { width: w, height: h, cellStart, cellPixels } = this.cells
+    const plain = new ImageData(w, h)
+    plain.data.fill(255)
+    this.colors.forEach((hex, cell) => {
+      if (!hex) return
+      const [r, g, b] = hexToRgb(hex)
+      for (let i = cellStart[cell]; i < cellStart[cell + 1]; i++) {
+        const q = cellPixels[i] * 4
+        plain.data[q] = r
+        plain.data[q + 1] = g
+        plain.data[q + 2] = b
+      }
+    })
+    const fills = Object.assign(document.createElement('canvas'), { width: w, height: h })
+    fills.getContext('2d').putImageData(plain, 0, 0)
     const k = maxSide ? Math.min(1, maxSide / Math.max(w, h)) : 1
     const c = Object.assign(document.createElement('canvas'), { width: Math.round(w * k), height: Math.round(h * k) })
     const g = c.getContext('2d')
     g.imageSmoothingQuality = 'high'
-    g.drawImage(this.fillCanvas, 0, 0, c.width, c.height)
+    g.drawImage(fills, 0, 0, c.width, c.height)
     g.drawImage(this.lineCanvas, 0, 0, c.width, c.height)
     return c
   }

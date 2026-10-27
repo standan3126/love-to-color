@@ -81,3 +81,29 @@ export async function loadCells(item, detail) {
   const { palette, blank } = drawPattern(item.pattern, detail, L, C)
   return buildCells({ lines: L.getImageData(0, 0, SIZE, SIZE), colors: C.getImageData(0, 0, SIZE, SIZE), palette, blank })
 }
+
+// A picture's outlines at one size, as the coloring screen will show them before any color.
+const outlines = new Map()
+export async function outlineCanvas(item, detail) {
+  const key = `${item.id}:${detail}`
+  if (!outlines.has(key)) {
+    const cells = await loadCells(item, detail)
+    const c = document.createElement('canvas')
+    c.width = cells.width
+    c.height = cells.height
+    const g = c.getContext('2d')
+    const img = g.createImageData(cells.width, cells.height)
+    for (let p = 0, k = 0; p < cells.lineAlpha.length; p++, k += 4) {
+      const a = cells.lineAlpha[p] / 255
+      img.data[k] = 255 - a * (255 - 43)
+      img.data[k + 1] = 255 - a * (255 - 38)
+      img.data[k + 2] = 255 - a * (255 - 34)
+      img.data[k + 3] = 255
+    }
+    g.putImageData(img, 0, 0)
+    outlines.set(key, c)
+    // Keep only the last few: each is a full-size picture, and phones have little memory.
+    if (outlines.size > 4) outlines.delete(outlines.keys().next().value)
+  }
+  return outlines.get(key)
+}

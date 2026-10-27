@@ -5,7 +5,7 @@ import { addExitButton, setupPage, tapToStart, warmOffline } from '/shared/v1/ki
 import { gameStore, makeTransferCode, openBackupFile, readTransferCode, saveBackupFile } from '/shared/v1/save.js'
 import { Sound } from '/shared/v1/sound/index.js'
 import { colorName, CRAYONS, PACKS, WHITE } from './crayons.js'
-import { findPicture, GROUPS, loadCatalog, loadCells, previewOf, SIZES } from './pictures.js'
+import { findPicture, GROUPS, loadCatalog, loadCells, outlineCanvas, previewOf, SIZES } from './pictures.js'
 import { Stage } from './stage.js'
 import { colorWheel } from './wheel.js'
 
@@ -57,15 +57,25 @@ function renderHome() {
   $('keepSection').hidden = !saves.length
   $('keepList').replaceChildren(
     ...saves.map((s) => {
-      const card = el('button', { type: 'button', className: 'keep-card' })
-      const img = el('img', { src: s.thumb || '', alt: '' })
+      const card = el('div', { className: 'keep-card' })
+      const open = el('button', { type: 'button', className: 'keep-open' })
       const size = SIZES.find((z) => z.id === s.size)
-      card.append(
-        img,
-        el('span', { className: 'card-name', textContent: findPicture(s.id).name }),
+      const name = findPicture(s.id).name
+      open.append(
+        el('img', { src: s.thumb || '', alt: '' }),
+        el('span', { className: 'card-name', textContent: name }),
         el('span', { className: 'card-note', textContent: `${s.mode === 'number' ? 'By Number' : 'Free'} · ${size?.name} · ${s.done ? 'Finished' : `${s.percent || 0}%`}` }),
       )
-      card.addEventListener('click', () => openColoring(findPicture(s.id), s.size, s.mode))
+      open.addEventListener('click', () => openColoring(findPicture(s.id), s.size, s.mode))
+      const remove = el('button', { type: 'button', className: 'keep-delete', innerHTML: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>' })
+      remove.setAttribute('aria-label', `Delete ${name}`)
+      remove.addEventListener('click', () => {
+        if (!confirm(`Delete “${name}”? Its colors will be gone for good.`)) return
+        store.remove(s.key)
+        renderHome()
+        toast('Picture deleted')
+      })
+      card.append(open, remove)
       return card
     }),
   )
@@ -122,7 +132,22 @@ function openSetup(item) {
   show('setup')
 }
 
+// The picture exactly as it will be at the chosen size (cells joined, outlines and all).
+let previewTurn = 0
+async function showSizePreview() {
+  const turn = ++previewTurn
+  const item = setupItem
+  const detail = SIZES.findIndex((z) => z.id === settings.size)
+  $('setupPreview').classList.add('busy')
+  await new Promise((r) => setTimeout(r, 20))
+  const canvas = await outlineCanvas(item, detail)
+  if (turn !== previewTurn || item !== setupItem) return
+  $('setupPreview').replaceChildren(canvas)
+  $('setupPreview').classList.remove('busy')
+}
+
 function renderSetupChoices() {
+  showSizePreview()
   choiceButtons($('sizeChoices'), SIZES, settings.size, (id) => {
     settings.size = id
     saveSettings()
@@ -158,6 +183,7 @@ async function openColoring(item, size, mode) {
   $('preparing').hidden = false
   $('stage').replaceChildren()
   $('swatches').replaceChildren()
+  delete $('swatches').dataset.set
   await new Promise((r) => setTimeout(r, 30)) // let "Getting your picture ready" show first
   const detail = SIZES.findIndex((s) => s.id === size)
   const cells = await loadCells(item, detail)
@@ -199,6 +225,7 @@ async function openColoring(item, size, mode) {
   }
   updateProgress()
   $('preparing').hidden = true
+  revealSelected()
   s.stage.draw()
 }
 
@@ -241,6 +268,9 @@ function tapNumber(c) {
     if (next === undefined) return finish()
     s.selected = next
     toast(`All the ${s.numbers.get(t)}s are done!`)
+    renderNumberSwatches()
+    revealSelected()
+    return
   }
   renderNumberSwatches()
 }
@@ -251,7 +281,9 @@ const tuneStep = (n) => TUNE[(n - 1) % TUNE.length]
 
 function renderNumberSwatches() {
   const s = session
-  $('swatches').replaceChildren(
+  const row = $('swatches')
+  const scrolled = row.scrollLeft
+  row.replaceChildren(
     ...[...s.numbers].map(([t, num]) => {
       const hex = s.cells.palette[t]
       const b = el('button', { type: 'button', className: 'swatch', textContent: num })
@@ -268,10 +300,13 @@ function renderNumberSwatches() {
       return b
     }),
   )
+  row.scrollLeft = scrolled
   $('colorLabel').textContent = `${s.numbers.get(s.selected)} is ${colorName(s.cells.palette[s.selected])}: ${s.left.get(s.selected)} left`
   s.stage.setTinted((c) => s.cells.target[c] === s.selected)
-  $('swatches').querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' })
 }
+
+// Only when the game picks the next number itself: bring it into view if it's off to the side.
+const revealSelected = () => $('swatches').querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' })
 
 // Light text on dark colors, dark text on light ones.
 function textOn(hex) {
@@ -351,7 +386,11 @@ function renderFreePalette() {
       renderFreePalette()
     })
   }
-  $('swatches').replaceChildren(...items)
+  const row = $('swatches')
+  const scrolled = row.dataset.set === set.id ? row.scrollLeft : 0
+  row.dataset.set = set.id
+  row.replaceChildren(...items)
+  row.scrollLeft = scrolled
   // The chosen color's name, and a way to keep it in My Colors.
   const label = $('colorLabel')
   label.replaceChildren(document.createTextNode(s.selected === WHITE ? 'White clears a cell' : colorName(s.selected)))
@@ -366,7 +405,6 @@ function renderFreePalette() {
     })
     label.append(keep)
   }
-  $('swatches').querySelector('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest', inline: 'center' })
 }
 
 colorWheel($('wheelHost'), {
