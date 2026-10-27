@@ -41,6 +41,13 @@ turned into outlines and colors by `tools/photo-tool`. The originals are not par
 | The Great Wave | [Under the Wave off Kanagawa (Kanagawa oki nami ura), also known as The Great Wave, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)](https://www.metmuseum.org/art/collection/search/36491) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
 | Rooster and Hen | [Rooster, Hen and Chicken with Spiderwort](https://www.metmuseum.org/art/collection/search/54305) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
 | Pine Tree by the Lake | [Pine Tree at Karasaki](https://www.metmuseum.org/art/collection/search/56411) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
+| Red Fuji | [South Wind, Clear Sky (Gaifū kaisei), also known as Red Fuji, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)](https://www.metmuseum.org/art/collection/search/36490) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
+| Swallows and Kingfisher | [Swallows and Kingfisher with Rose Mallows](https://www.metmuseum.org/art/collection/search/36721) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
+| Plum Garden | [Plum Garden at Kamata (Kamata no umezono), from the series One Hundred Famous Views of Edo (Meisho Edo hyakkei)](https://www.metmuseum.org/art/collection/search/53681) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
+| Lake Suwa | [Lake Suwa in Shinano Province (Shinshū Suwako), from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)](https://www.metmuseum.org/art/collection/search/56240) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
+| Kirifuri Waterfall | [Kirifuri Waterfall at Kurokami Mountain in Shimotsuke (Shimotsuke Kurokamiyama Kirifuri no taki), from the series A Tour of Waterfalls in Various Provinces (Shokoku taki meguri)](https://www.metmuseum.org/art/collection/search/55019) | Katsushika Hokusai | Public domain (CC0, The Met Open Access) |
+| Dye House by Mount Fuji | [Dye House at Konya-cho, Kanda](https://www.metmuseum.org/art/collection/search/56692) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
+| Sudden Shower over the Bridge | [Sudden Shower over Shin-Ōhashi Bridge and Atake (Ōhashi Atake no yūdachi), from the series One Hundred Famous Views of Edo (Meisho Edo hyakkei)](https://www.metmuseum.org/art/collection/search/36461) | Utagawa Hiroshige | Public domain (CC0, The Met Open Access) |
 
 ## Sound
 

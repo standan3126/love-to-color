@@ -3,7 +3,7 @@
 // moving progress and the gentle music.
 import { addExitButton, setupPage, tapToStart, warmOffline } from '/shared/v1/kit.js'
 import { gameStore, makeTransferCode, openBackupFile, readTransferCode, saveBackupFile } from '/shared/v1/save.js'
-import { Sound } from '/shared/v1/sound/index.js'
+import { LAYER_LABELS, LAYERS, Sound } from '/shared/v1/sound/index.js'
 import { colorName, CRAYONS, PACKS, WHITE } from './crayons.js'
 import { findPicture, GROUPS, loadCatalog, loadCells, outlineCanvas, previewOf, sectionOf, SECTIONS, SIZES, softLines } from './pictures.js'
 import { Stage } from './stage.js'
@@ -15,9 +15,12 @@ const MODES = [
   { id: 'free', name: 'Free Color', note: 'Any color in any cell' },
 ]
 const store = gameStore(GAME_ID)
-const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, ...store.get('settings', {}) }
+const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, nature: {}, ...store.get('settings', {}) }
+// Volumes came after the on/off switches: an older "sounds off" starts the sounds slider at 0.
+settings.musicVolume ??= 0.45
+settings.soundsVolume ??= settings.sounds === false ? 0 : 0.7
 const saveSettings = () => store.set('settings', settings)
-const sound = new Sound({ notes: settings.sounds ? 0.7 : 0, nature: 0, music: 0.45 })
+const sound = new Sound({ notes: settings.soundsVolume, nature: 0.8, music: settings.musicVolume })
 
 const $ = (id) => document.getElementById(id)
 function el(tag, { role, ...props } = {}) {
@@ -550,9 +553,17 @@ document.querySelectorAll('.sheet').forEach((sheet) => {
   })
 })
 
-$('openSettings').addEventListener('click', async () => {
+// Settings open from home (everything) or while coloring (only sound: moving pictures in the
+// middle of one would overwrite what's open).
+$('openSettings').addEventListener('click', () => openSettings(true))
+$('colorSettings').addEventListener('click', () => openSettings(false))
+
+async function openSettings(fromHome) {
   $('musicToggle').checked = settings.music
-  $('soundToggle').checked = settings.sounds
+  renderSoundSliders()
+  $('homeSettings').hidden = !fromHome
+  openSheet('settingsSheet')
+  if (!fromHome) return
   const catalog = await loadCatalog()
   $('credits').replaceChildren(
     ...catalog
@@ -565,19 +576,47 @@ $('openSettings').addEventListener('click', async () => {
       }),
   )
   $('moveNote').textContent = ''
-  openSheet('settingsSheet')
-})
+}
 $('musicToggle').addEventListener('change', (e) => {
   settings.music = e.target.checked
   saveSettings()
   sound.unlock()
   sound.setMusic(settings.music)
 })
-$('soundToggle').addEventListener('change', (e) => {
-  settings.sounds = e.target.checked
-  saveSettings()
-  sound.setVolumes({ notes: settings.sounds ? 0.7 : 0 })
-})
+
+function slider(label, value, onInput) {
+  const row = el('label', { className: 'slider' })
+  const input = el('input', { type: 'range', min: 0, max: 1, step: 0.05, value })
+  input.addEventListener('input', () => {
+    sound.unlock()
+    onInput(Number(input.value))
+    saveSettings()
+  })
+  row.append(el('span', { textContent: label }), input)
+  return row
+}
+
+function renderSoundSliders() {
+  $('volumeSliders').replaceChildren(
+    slider('Music volume', settings.musicVolume, (v) => {
+      settings.musicVolume = v
+      sound.setVolumes({ music: v })
+    }),
+    slider('Coloring sounds', settings.soundsVolume, (v) => {
+      settings.soundsVolume = v
+      sound.setVolumes({ notes: v })
+    }),
+  )
+  $('natureSliders').replaceChildren(
+    ...LAYERS.map((name) =>
+      slider(LAYER_LABELS[name], settings.nature[name] || 0, (v) => {
+        if (v) settings.nature[name] = v
+        else delete settings.nature[name]
+        sound.setNature(settings.nature)
+      }),
+    ),
+  )
+}
 
 // Moving pictures: everything except the small previews, which are made again when opened.
 const movable = () => {
@@ -647,6 +686,7 @@ tapToStart({
   onStart: () => {
     sound.unlock()
     sound.setMusic(settings.music)
+    sound.setNature(settings.nature)
   },
 })
 setTimeout(() => warmOffline('offline-files.json'), 4000)

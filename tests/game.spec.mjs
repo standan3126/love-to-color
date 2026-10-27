@@ -39,7 +39,7 @@ const info = (page) =>
 
 test('home lists every section and group of pictures', async ({ page }) => {
   const errors = await start(page)
-  const sections = { Easy: ['Cottages', 'Gardens', 'Animals'], Cozy: ['Mandalas', 'Fractals', 'Tessellations'], Detailed: ['Animals', 'Nature'] }
+  const sections = { Easy: ['Cottages', 'Gardens', 'Animals'], Cozy: ['Mandalas', 'Fractals', 'Tessellations'], Detailed: ['Gardens', 'Animals', 'Nature'] }
   for (const [section, groups] of Object.entries(sections)) {
     await page.getByRole('tab', { name: section, exact: true }).click()
     for (const group of groups) {
@@ -246,5 +246,28 @@ test('pictures saved before the sections still open at their old size', async ({
   await page.locator('.keep-open').click()
   await expect(page.locator('#preparing')).toBeHidden({ timeout: 20000 })
   expect(await page.evaluate(() => [window.loveToColor.session.size, window.loveToColor.session.stage.soft])).toEqual(['easy', false])
+  expect(errors).toEqual([])
+})
+
+test('sound settings open while coloring, with volumes and nature sounds', async ({ page }) => {
+  const errors = await start(page)
+  await openPicture(page, 'Easy', 'Gardens', 'Flower Meadow', 'Free Color')
+  await page.locator('#colorSettings').click()
+  await expect(page.locator('#settingsSheet')).toBeVisible()
+  // Only sound here: moving pictures waits for the home screen.
+  await expect(page.locator('#makeCode')).toBeHidden()
+  await page.getByLabel('Music volume').fill('0.2')
+  await page.getByLabel('Coloring sounds').fill('0')
+  await page.getByLabel('Rain').fill('0.6')
+  await page.getByLabel('Crickets').fill('0.3')
+  const saved = await page.evaluate(() => JSON.parse(localStorage.getItem('love-to-color:settings')))
+  expect([saved.musicVolume, saved.soundsVolume, saved.nature]).toEqual([0.2, 0, { rain: 0.6, crickets: 0.3 }])
+  await page.locator('#settingsSheet [data-close]').click()
+  await expect(page.locator('#settingsSheet')).toBeHidden()
+  await expect(page.locator('#coloring')).toBeVisible()
+  // From home, everything is there again.
+  await page.locator('#colorBack').click()
+  await page.locator('#openSettings').click()
+  await expect(page.locator('#makeCode')).toBeVisible()
   expect(errors).toEqual([])
 })

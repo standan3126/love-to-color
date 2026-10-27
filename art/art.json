@@ -651,5 +651,362 @@
    "source": "https://www.metmuseum.org/art/collection/search/56411",
    "license": "Public domain (CC0, The Met Open Access)"
   }
+ },
+ {
+  "id": "photo-red-fuji",
+  "name": "Red Fuji",
+  "group": "nature",
+  "width": 1600,
+  "height": 1103,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#62524d",
+     "#85675d",
+     "#ae7666",
+     "#bc7463",
+     "#ab927c",
+     "#c67e6a",
+     "#ba8d77",
+     "#c98d75",
+     "#9a9784",
+     "#d2cdb4",
+     "#d9cdb0",
+     "#e8d2b0",
+     "#e4d6b9",
+     "#f3ddb9",
+     "#b4bdaa",
+     "#c4c4ad",
+     "#a1b6a9",
+     "#6e8b84",
+     "#7ba5a5",
+     "#1b3b5b",
+     "#234b6c",
+     "#2f5c7d",
+     "#465a67",
+     "#52636c",
+     "#3b6c88",
+     "#43758e",
+     "#497c92",
+     "#677a7b",
+     "#538192",
+     "#638b96",
+     "#5e5d62",
+     "#839083"
+    ]
+   }
+  },
+  "credit": {
+   "title": "South Wind, Clear Sky (Gaifū kaisei), also known as Red Fuji, from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)",
+   "artist": "Katsushika Hokusai",
+   "source": "https://www.metmuseum.org/art/collection/search/36490",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-swallows-and-kingfisher",
+  "name": "Swallows and Kingfisher",
+  "group": "animals",
+  "width": 1143,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#786a63",
+     "#896761",
+     "#8b7b70",
+     "#9d625f",
+     "#af8879",
+     "#be9682",
+     "#d78773",
+     "#ec766c",
+     "#d3a990",
+     "#f6a38f",
+     "#f7af93",
+     "#ecc4a4",
+     "#a09282",
+     "#dfd1b8",
+     "#f4dabb",
+     "#fae2c4",
+     "#fce8cc",
+     "#8fa78c",
+     "#9cb397",
+     "#96afac",
+     "#4c5864",
+     "#475c70",
+     "#5a7881",
+     "#668f9e",
+     "#789ea5",
+     "#585b5c",
+     "#685a57",
+     "#5d696d",
+     "#696661",
+     "#717268",
+     "#7d8474",
+     "#bac1b1"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Swallows and Kingfisher with Rose Mallows",
+   "artist": "Utagawa Hiroshige",
+   "source": "https://www.metmuseum.org/art/collection/search/36721",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-plum-garden",
+  "name": "Plum Garden",
+  "group": "garden",
+  "width": 1059,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#795d57",
+     "#796b65",
+     "#8c5f57",
+     "#8e7069",
+     "#c46158",
+     "#ab8175",
+     "#d56255",
+     "#d89e8b",
+     "#f6a894",
+     "#f8b096",
+     "#f8b99c",
+     "#f7b49e",
+     "#f8c5aa",
+     "#efd3b7",
+     "#86745f",
+     "#a38561",
+     "#ad9d87",
+     "#cda772",
+     "#eaae70",
+     "#f2d48e",
+     "#f8e4c5",
+     "#adc4a2",
+     "#98ba9c",
+     "#547e79",
+     "#598b84",
+     "#71a593",
+     "#5f95a0",
+     "#78a8ae",
+     "#7c6870",
+     "#665a58",
+     "#616a6c",
+     "#7b766b"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Plum Garden at Kamata (Kamata no umezono), from the series One Hundred Famous Views of Edo (Meisho Edo hyakkei)",
+   "artist": "Utagawa Hiroshige",
+   "source": "https://www.metmuseum.org/art/collection/search/53681",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-lake-suwa",
+  "name": "Lake Suwa",
+  "group": "nature",
+  "width": 1600,
+  "height": 1107,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#c9a483",
+     "#bbb8a4",
+     "#d1c7a9",
+     "#d7d2b7",
+     "#dfd0b1",
+     "#e9dbbc",
+     "#f1dbb9",
+     "#fae5c4",
+     "#c1c7b1",
+     "#b0bfac",
+     "#8baba6",
+     "#9db7aa",
+     "#254c69",
+     "#385068",
+     "#365f7b",
+     "#445a6f",
+     "#516273",
+     "#48677d",
+     "#5a656c",
+     "#416d86",
+     "#49778d",
+     "#5a6f7c",
+     "#578493",
+     "#64929a",
+     "#75a1a2",
+     "#354960",
+     "#435062",
+     "#4c5967",
+     "#6b7476",
+     "#818986",
+     "#9b9e94",
+     "#a7b5a9"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Lake Suwa in Shinano Province (Shinshū Suwako), from the series Thirty-six Views of Mount Fuji (Fugaku sanjūrokkei)",
+   "artist": "Katsushika Hokusai",
+   "source": "https://www.metmuseum.org/art/collection/search/56240",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-kirifuri-waterfall",
+  "name": "Kirifuri Waterfall",
+  "group": "nature",
+  "width": 1110,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#936c5d",
+     "#b2836c",
+     "#8f8c71",
+     "#d1a97d",
+     "#c8c2ab",
+     "#e4c791",
+     "#f1ce8e",
+     "#e2cda8",
+     "#dacfb3",
+     "#ead8b9",
+     "#f3dab5",
+     "#99ae80",
+     "#b1b6a2",
+     "#90a47e",
+     "#6b7f6c",
+     "#5d706a",
+     "#5b7b7a",
+     "#5f827e",
+     "#648a81",
+     "#90a5a3",
+     "#424c54",
+     "#405362",
+     "#405b73",
+     "#4c6069",
+     "#556b6e",
+     "#4e6676",
+     "#6c7e81",
+     "#404648",
+     "#665e58",
+     "#787e74",
+     "#97a699",
+     "#a3b4a8"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Kirifuri Waterfall at Kurokami Mountain in Shimotsuke (Shimotsuke Kurokamiyama Kirifuri no taki), from the series A Tour of Waterfalls in Various Provinces (Shokoku taki meguri)",
+   "artist": "Katsushika Hokusai",
+   "source": "https://www.metmuseum.org/art/collection/search/55019",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-dye-house-by-mount-fuji",
+  "name": "Dye House by Mount Fuji",
+  "group": "nature",
+  "width": 1055,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#684943",
+     "#746760",
+     "#ac6157",
+     "#917f75",
+     "#b85b50",
+     "#c2695c",
+     "#ae9182",
+     "#e19f87",
+     "#efc4ac",
+     "#c8c3b4",
+     "#dadac8",
+     "#ebdcc5",
+     "#ebe6d4",
+     "#f9ead3",
+     "#97bcbb",
+     "#b3c8be",
+     "#324350",
+     "#254b6a",
+     "#365470",
+     "#49575f",
+     "#2d5c7f",
+     "#47667b",
+     "#387392",
+     "#407c98",
+     "#5d99aa",
+     "#88afb1",
+     "#5e5551",
+     "#62655d",
+     "#7e8680",
+     "#a4a49a",
+     "#ced5c6",
+     "#dfe1d2"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Dye House at Konya-cho, Kanda",
+   "artist": "Utagawa Hiroshige",
+   "source": "https://www.metmuseum.org/art/collection/search/56692",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
+ },
+ {
+  "id": "photo-sudden-shower-over-the-bridge",
+  "name": "Sudden Shower over the Bridge",
+  "group": "nature",
+  "width": 1066,
+  "height": 1600,
+  "sizes": {
+   "detailed": {
+    "palette": [
+     "#645a52",
+     "#734c47",
+     "#75695e",
+     "#876e5c",
+     "#9a5b51",
+     "#a38368",
+     "#c15e53",
+     "#d06858",
+     "#bf9b78",
+     "#8b7e6e",
+     "#988875",
+     "#d7ac7f",
+     "#e7c392",
+     "#7d8f65",
+     "#8ea08e",
+     "#a4b69f",
+     "#8daa9a",
+     "#98b09d",
+     "#7a998d",
+     "#29445b",
+     "#37576e",
+     "#4a6f7e",
+     "#64747a",
+     "#697c81",
+     "#6e8487",
+     "#3b3c3a",
+     "#4d4c4c",
+     "#586165",
+     "#61605e",
+     "#5f6b6e",
+     "#6d7674",
+     "#7c887b"
+    ]
+   }
+  },
+  "credit": {
+   "title": "Sudden Shower over Shin-Ōhashi Bridge and Atake (Ōhashi Atake no yūdachi), from the series One Hundred Famous Views of Edo (Meisho Edo hyakkei)",
+   "artist": "Utagawa Hiroshige",
+   "source": "https://www.metmuseum.org/art/collection/search/36461",
+   "license": "Public domain (CC0, The Met Open Access)"
+  }
  }
 ]
