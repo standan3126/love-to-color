@@ -12,11 +12,11 @@
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <!-- Home: pictures in progress, then every picture to start -->
+    <!-- Home (the launch page): pictures in progress, then every picture to start. No Play
+         button: picking a picture is how you start. -->
     <main id="home" class="screen">
       <header class="home-head">
         <h1 class="rainbow" aria-label="Love To Color"><span aria-hidden="true"><span>L</span><span>o</span><span>v</span><span>e</span> <span>T</span><span>o</span> <span>C</span><span>o</span><span>l</span><span>o</span><span>r</span></span></h1>
-        <button type="button" class="icon-button" id="openSettings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.7 7.7 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.7 7.7 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.7 7.7 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
       </header>
       <section id="keepSection" hidden>
         <h2>Keep coloring</h2>
@@ -32,9 +32,6 @@
 
     <!-- Setup: the way of coloring for the chosen picture -->
     <main id="setup" class="screen" hidden>
-      <header class="bar">
-        <button type="button" class="text-button" id="setupBack">‹ Pictures</button>
-      </header>
       <div class="setup-body">
         <div id="setupPreview" class="setup-preview"></div>
         <h1 id="setupName"></h1>
@@ -50,15 +47,13 @@
     <!-- Coloring -->
     <main id="coloring" class="screen coloring" hidden>
       <header class="bar">
-        <button type="button" class="text-button" id="colorBack">‹ Pictures</button>
         <div class="bar-title"><span id="colorName"></span><small id="colorProgress"></small></div>
         <button type="button" class="icon-button" id="undo" aria-label="Undo" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></svg></button>
-        <button type="button" class="icon-button" id="colorSettings" aria-label="Settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8Z"/><path d="M19.4 13.5a7.6 7.6 0 0 0 0-3l2-1.6-2-3.4-2.4 1a7.7 7.7 0 0 0-2.6-1.5L14 2.5h-4l-.4 2.5A7.7 7.7 0 0 0 7 6.5l-2.4-1-2 3.4 2 1.6a7.6 7.6 0 0 0 0 3l-2 1.6 2 3.4 2.4-1a7.7 7.7 0 0 0 2.6 1.5l.4 2.5h4l.4-2.5a7.7 7.7 0 0 0 2.6-1.5l2.4 1 2-3.4-2-1.6Z"/></svg></button>
-        <button type="button" class="icon-button" id="savePhoto" aria-label="Save to Photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
       </header>
       <div class="stage-wrap">
         <div id="stage" class="stage"></div>
         <div class="zoom-buttons">
+          <button type="button" class="icon-button" id="savePhoto" aria-label="Save to Photos"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></button>
           <button type="button" class="icon-button" id="findCell" aria-label="Find a cell to color" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></button>
           <button type="button" class="icon-button" id="zoomOut" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"/></svg></button>
           <button type="button" class="icon-button" id="zoomFit" aria-label="Whole picture"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
@@ -89,7 +84,7 @@
         <div id="donePicture" class="done-picture"></div>
         <p class="soft">Your picture is saved in Keep coloring.</p>
         <button type="button" class="button" id="doneSave">Save to Photos</button>
-        <button type="button" class="text-button" id="doneHome">Back to pictures</button>
+        <button type="button" class="text-button" id="doneHome">Home</button>
         <button type="button" class="text-button" data-close>Keep looking</button>
       </div>
     </div>

@@ -43,7 +43,7 @@ button {
 .home-head {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 12px;
 }
 
@@ -380,10 +380,6 @@ h2 {
 
 /* --- Coloring ------------------------------------------------------------------------------- */
 
-body.coloring-open .hub-exit {
-  display: none;
-}
-
 .screen.coloring {
   position: fixed;
   inset: 0;
@@ -404,6 +400,11 @@ html.ios-solid-bar .screen.coloring {
 .coloring .bar {
   position: static;
   flex: none;
+  /* Room for the toolbox's Home button (left) and Settings gear (right). */
+  min-height: 60px;
+  box-sizing: border-box;
+  padding-left: calc(env(safe-area-inset-left) + 118px);
+  padding-right: calc(env(safe-area-inset-right) + 64px);
 }
 
 .bar-title {

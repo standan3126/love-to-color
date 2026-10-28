@@ -1,7 +1,7 @@
 // Love To Color: pick a picture from Easy, Cozy or Detailed, pick Color by Number or Free Color,
 // then tap cells to fill them. Uses GameHub's toolbox for the Exit button, Tap to Start, saving,
 // moving progress and the gentle music.
-import { addExitButton, setupPage, tapToStart, warmOffline } from '/shared/v1/kit.js'
+import { gameFrame, setupPage, tapToStart, warmOffline } from '/shared/v1/kit.js'
 import { gameStore } from '/shared/v1/save.js'
 import { SettingsPanel } from '/shared/v1/settings.js'
 import { Sound } from '/shared/v1/sound/index.js'
@@ -116,14 +116,12 @@ function applyLight() {
 }
 applyLight()
 
-$('openSettings').addEventListener('click', () => panel.open())
-$('colorSettings').addEventListener('click', () => panel.open())
 
 // --- Screens -------------------------------------------------------------------------------------
 
 function show(id) {
   for (const s of ['home', 'setup', 'coloring']) $(s).hidden = s !== id
-  document.body.classList.toggle('coloring-open', id !== 'home')
+  frame.setPage(id === 'home' ? 'launch' : 'play')
   window.scrollTo(0, 0)
 }
 
@@ -273,7 +271,6 @@ function renderSetupChoices() {
   $('startOver').hidden = !existing
 }
 
-$('setupBack').addEventListener('click', () => show('home'))
 $('startColoring').addEventListener('click', () => openColoring(setupItem, sizeFor(setupItem), settings.mode))
 $('startOver').addEventListener('click', () => {
   if (!confirm('Start this picture over? The colors you added will be cleared.')) return
@@ -584,7 +581,6 @@ function leaveColoring() {
   show('home')
 }
 
-$('colorBack').addEventListener('click', leaveColoring)
 $('doneHome').addEventListener('click', () => {
   closeSheet('doneSheet')
   leaveColoring()
@@ -649,7 +645,13 @@ window.loveToColor = { panel, get session() { return session } }
 // --- Start ---------------------------------------------------------------------------------------
 
 setupPage()
-addExitButton({ beforeExit: saveNow })
+// The toolbox frame: Hub on the pictures page, Home while setting up or coloring, the gear top
+// right on every page.
+const frame = gameFrame({
+  onSettings: () => panel.open(),
+  beforeExit: saveNow,
+  onHome: () => ($('coloring').hidden ? show('home') : leaveColoring()),
+})
 document.addEventListener('visibilitychange', () => document.visibilityState === 'hidden' && saveNow())
 await loadCatalog()
 renderHome()
