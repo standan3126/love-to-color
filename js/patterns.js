@@ -1,7 +1,8 @@
 // Pictures drawn in code: mandalas, fractals and tessellations. Each one is a list of shapes
 // (filled with a palette color, outlined in ink), drawn the same way every time from its seed.
 //
-// detail: 0 = Easy (big cells), 1 = Cozy, 2 = Detailed (small cells).
+// detail: 0 = Detail 1 (big cells), 1 = Detail 2, 2 = Detail 3 (small cells). Saves call them by
+// the old size ids easy / cozy / detailed.
 // Never change how a published pattern draws: saved pictures find their cells again from it.
 import { PACKS, WHITE } from './crayons.js'
 
@@ -308,6 +309,116 @@ function pinwheels(detail) {
   return shapes
 }
 
+// --- More patterns (2026-10-27) --------------------------------------------------------------------
+
+// Eight-pointed stars on a square grid, with little diamonds where the corners meet.
+function starTiles(detail) {
+  const s = [300, 200, 150][detail]
+  const shapes = []
+  const corners = []
+  for (let y = 0; y < SIZE; y += s) {
+    for (let x = 0; x < SIZE; x += s) {
+      const i = Math.round(x / s)
+      const j = Math.round(y / s)
+      const cx = x + s / 2
+      const cy = y + s / 2
+      const base = (i + j) % 2
+      shapes.push({ path: poly([[x, y], [x + s, y], [x + s, y + s], [x, y + s]]), c: base })
+      const star = Array.from({ length: 16 }, (_, k) => polar(cx, cy, k % 2 ? s * 0.25 : s * 0.46, (k * Math.PI) / 8))
+      shapes.push({ path: poly(star), c: 2 + ((i + 2 * j) % 2) })
+      if (detail > 0) shapes.push({ path: poly(Array.from({ length: 8 }, (_, k) => polar(cx, cy, s * 0.16, (k * Math.PI) / 4 + Math.PI / 8))), c: 4 })
+      if (detail === 2) shapes.push({ path: circle(cx, cy, s * 0.07), c: 5 })
+      corners.push([x, y])
+    }
+  }
+  if (detail > 0) {
+    const d = s * 0.14
+    for (const [x, y] of corners) shapes.push({ path: poly([[x, y - d], [x + d, y], [x, y + d], [x - d, y]]), c: 5 })
+  }
+  return shapes
+}
+
+// Rows of triangles; the most detail splits each triangle into three from its middle.
+function triangles(detail) {
+  const s = [240, 240, 160][detail]
+  const h = (s * Math.sqrt(3)) / 2
+  const shapes = []
+  for (let row = 0; row * h < SIZE; row++) {
+    const y0 = row * h
+    const y1 = y0 + h
+    const shift = row % 2 ? -s / 2 : 0
+    for (let k = -1; k * (s / 2) + shift < SIZE + s; k++) {
+      const x = k * (s / 2) + shift
+      const up = (k + row) % 2 === 0
+      const tri = up ? [[x, y1], [x + s / 2, y0], [x + s, y1]] : [[x, y0], [x + s, y0], [x + s / 2, y1]]
+      const col = (((k + 3 * row) % 6) + 6) % 6
+      if (detail === 2) {
+        const m = [(tri[0][0] + tri[1][0] + tri[2][0]) / 3, (tri[0][1] + tri[1][1] + tri[2][1]) / 3]
+        for (let e = 0; e < 3; e++) shapes.push({ path: poly([tri[e], tri[(e + 1) % 3], m]), c: (col + e * 2) % 6 })
+      } else {
+        shapes.push({ path: poly(tri), c: col })
+        if (detail === 1) {
+          const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2]
+          shapes.push({ path: poly([mid(tri[0], tri[1]), mid(tri[1], tri[2]), mid(tri[2], tri[0])]), c: (col + 3) % 6 })
+        }
+      }
+    }
+  }
+  return shapes
+}
+
+// Overlapping circles on a honeycomb, so every crossing makes a new little cell.
+function flowerOfLife(detail) {
+  const r = [260, 180, 130][detail]
+  const shapes = []
+  hexGrid(r, (x, y, row, col) => {
+    shapes.push({ path: circle(x, y, r), c: (((col + row * 2) % 3) + 3) % 3, open: true })
+  })
+  if (detail > 0) hexGrid(r, (x, y) => shapes.push({ path: circle(x, y, r * 0.3), c: 3, open: true }))
+  if (detail === 2) hexGrid(r, (x, y) => shapes.push({ path: circle(x, y, r * 0.12), c: 4, open: true }))
+  return shapes
+}
+
+// Scales with rainbow rings inside.
+function arches(seed) {
+  return (detail) => {
+    const rand = rng(seed + detail)
+    const r = [150, 125, 100][detail]
+    const rings = [2, 3, 4][detail]
+    const shapes = []
+    const rows = Math.ceil(SIZE / (r * 0.6)) + 2
+    for (let row = 0; row < rows; row++) {
+      const y = row * r * 0.6 - r * 0.4
+      const shift = row % 2 ? r : 0
+      for (let x = -r + shift; x < SIZE + r; x += 2 * r) {
+        const start = Math.floor(rand() * 6)
+        for (let k = 0; k < rings; k++) shapes.push({ path: circle(x, y, r * (1 - k / rings)), c: (start + k) % 6 })
+      }
+    }
+    return shapes
+  }
+}
+
+// Basket weave: square blocks of strips, turning a quarter turn from block to block.
+function basket(detail) {
+  const s = [240, 200, 150][detail]
+  const strips = [2, 3, 4][detail]
+  const shapes = []
+  for (let y = 0; y < SIZE; y += s) {
+    for (let x = 0; x < SIZE; x += s) {
+      const i = Math.round(x / s)
+      const j = Math.round(y / s)
+      const across = (i + j) % 2 === 0
+      const w = s / strips
+      for (let k = 0; k < strips; k++) {
+        const r = across ? [[x, y + k * w], [x + s, y + k * w], [x + s, y + (k + 1) * w], [x, y + (k + 1) * w]] : [[x + k * w, y], [x + (k + 1) * w, y], [x + (k + 1) * w, y + s], [x + k * w, y + s]]
+        shapes.push({ path: poly(r), c: ((across ? 0 : 3) + (k % 3)) % 6 })
+      }
+    }
+  }
+  return shapes
+}
+
 // --- The list ------------------------------------------------------------------------------------
 
 const pack = (id) => PACKS.find((p) => p.id === id).colors.map((c) => c.hex)
@@ -328,6 +439,18 @@ export const PATTERNS = [
   { id: 'tiles-cubes', name: 'Tumbling Blocks', kind: 'tessellation', build: cubes, palette: choose(pack('cottage'), [3, 6, 7, 8, 1, 5]) },
   { id: 'tiles-scales', name: 'Fish Scales', kind: 'tessellation', build: scales(5), palette: choose(pack('ocean'), [0, 1, 2, 3, 4, 5]) },
   { id: 'tiles-pinwheels', name: 'Pinwheel Quilt', kind: 'tessellation', build: pinwheels, palette: choose(pack('autumn'), [0, 9, 3, 8, 6, 2]) },
+  // Added 2026-10-27 (the user asked for more mandalas and patterns).
+  { id: 'mandala-meadow', name: 'Meadow Mandala', kind: 'mandala', build: mandala(73), palette: choose(pack('garden'), [2, 7, 4, 0, 8, 5, 1, 9]) },
+  { id: 'mandala-lagoon', name: 'Lagoon Mandala', kind: 'mandala', build: mandala(89), palette: choose(pack('ocean'), [2, 7, 0, 4, 8, 1, 6, 3]) },
+  { id: 'mandala-ember', name: 'Ember Mandala', kind: 'mandala', build: mandala(97), palette: choose(pack('sunset'), [4, 9, 6, 0, 5, 8, 2, 7]) },
+  { id: 'mandala-candy', name: 'Sweet Mandala', kind: 'mandala', build: mandala(103), palette: choose(pack('pastel'), [0, 5, 2, 7, 1, 4, 8, 3]) },
+  { id: 'mandala-orchard', name: 'Orchard Mandala', kind: 'mandala', build: mandala(131), palette: choose(pack('autumn'), [0, 5, 3, 9, 1, 6, 4, 8]) },
+  { id: 'mandala-porch', name: 'Front Porch Mandala', kind: 'mandala', build: mandala(149), palette: choose(pack('cottage'), [6, 0, 3, 7, 1, 5, 2, 4]) },
+  { id: 'tiles-stars', name: 'Star Tiles', kind: 'tessellation', build: starTiles, palette: choose(pack('ocean'), [9, 7, 0, 2, 8, 4]) },
+  { id: 'tiles-triangles', name: 'Triangle Quilt', kind: 'tessellation', build: triangles, palette: choose(pack('sunset'), [0, 4, 6, 3, 8, 5]) },
+  { id: 'tiles-circles', name: 'Circle Garden', kind: 'tessellation', build: flowerOfLife, palette: choose(pack('garden'), [4, 0, 8, 2, 6, 7]) },
+  { id: 'tiles-arches', name: 'Rainbow Scales', kind: 'tessellation', build: arches(9), palette: choose(pack('pastel'), [0, 1, 2, 3, 6, 7]) },
+  { id: 'tiles-basket', name: 'Basket Weave', kind: 'tessellation', build: basket, palette: choose(pack('cottage'), [3, 4, 5, 1, 2, 6]) },
 ]
 
 // Draws a pattern's outlines and its colored-in version. size: the canvases' side in pixels.
@@ -346,7 +469,8 @@ export function drawPattern(pattern, detail, linesCtx, colorsCtx, size = SIZE) {
     ctx.lineJoin = 'round'
     for (const s of shapes) {
       ctx.fillStyle = fill ? pattern.palette[s.c % pattern.palette.length] : WHITE
-      ctx.fill(s.path)
+      // open: outline only, so overlapping shapes keep every crossing line (newer patterns only).
+      if (fill || !s.open) ctx.fill(s.path)
       if (!fill) {
         ctx.strokeStyle = '#2b2622'
         ctx.lineWidth = LINE[detail]

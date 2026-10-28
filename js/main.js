@@ -14,8 +14,15 @@ const MODES = [
   { id: 'number', name: 'Color by Number', note: 'Match each number to its color' },
   { id: 'free', name: 'Free Color', note: 'Any color in any cell' },
 ]
+// Patterns can be colored at three levels of detail (saved under the old size ids); drawings and
+// prints have one size each.
+const DETAILS = [
+  { id: 'easy', name: 'Detail 1', note: 'Light' },
+  { id: 'cozy', name: 'Detail 2', note: 'Detailed' },
+  { id: 'detailed', name: 'Detail 3', note: 'More detailed' },
+]
 const store = gameStore(GAME_ID)
-const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, nature: {}, ...store.get('settings', {}) }
+const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, nature: {}, patternSize: 'cozy', ...store.get('settings', {}) }
 // Volumes came after the on/off switches: an older "sounds off" starts the sounds slider at 0.
 settings.musicVolume ??= 0.45
 settings.soundsVolume ??= settings.sounds === false ? 0 : 0.7
@@ -65,7 +72,8 @@ function renderHome() {
       const item = findPicture(s.id)
       const name = item.name
       // Only pictures saved before the sections were at another size; say which.
-      const size = s.size === sectionOf(item).size ? null : SIZES.find((z) => z.id === s.size)?.name
+      const size =
+        item.kind === 'pattern' ? DETAILS.find((z) => z.id === s.size)?.name : s.size === sectionOf(item).size ? null : SIZES.find((z) => z.id === s.size)?.name
       const note = [s.mode === 'number' ? 'By Number' : 'Free', size, s.done ? 'Finished' : `${s.percent || 0}%`]
       open.append(
         el('img', { src: s.thumb || '', alt: '' }),
@@ -135,7 +143,7 @@ async function renderPictures() {
 // --- Setup ---------------------------------------------------------------------------------------
 
 let setupItem = null
-const sizeFor = (item) => sectionOf(item).size
+const sizeFor = (item) => (item.kind === 'pattern' ? settings.patternSize : sectionOf(item).size)
 
 function choiceButtons(host, options, current, onPick) {
   host.replaceChildren(
@@ -173,6 +181,14 @@ async function showSizePreview() {
 
 function renderSetupChoices() {
   showSizePreview()
+  const pattern = setupItem.kind === 'pattern'
+  $('detailTitle').hidden = $('detailChoices').hidden = !pattern
+  if (pattern)
+    choiceButtons($('detailChoices'), DETAILS, settings.patternSize, (id) => {
+      settings.patternSize = id
+      saveSettings()
+      renderSetupChoices()
+    })
   choiceButtons($('modeChoices'), MODES, settings.mode, (id) => {
     settings.mode = id
     saveSettings()

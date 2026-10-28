@@ -55,6 +55,27 @@ test('home lists every section and group of pictures', async ({ page }) => {
   expect(errors).toEqual([])
 })
 
+test('patterns come in Detail 1, 2 and 3, each a bigger page, saved apart', async ({ page }) => {
+  const errors = await start(page)
+  await page.getByRole('tab', { name: 'Cozy', exact: true }).click()
+  await page.getByRole('tab', { name: 'Tessellations', exact: true }).click()
+  await page.locator('.picture-card', { hasText: 'Star Tiles' }).click()
+  const counts = []
+  for (const d of ['Detail 1', 'Detail 2', 'Detail 3']) {
+    await page.getByRole('radio', { name: new RegExp(d) }).click()
+    await page.getByRole('radio', { name: /Free Color/ }).click()
+    await page.locator('#startColoring').click()
+    await expect.poll(() => page.evaluate(() => window.loveToColor.session?.cells?.cellCount ?? 0)).toBeGreaterThan(0)
+    counts.push(await page.evaluate(() => window.loveToColor.session.cells.cellCount))
+    expect(await page.evaluate(() => window.loveToColor.session.size)).toBe({ 'Detail 1': 'easy', 'Detail 2': 'cozy', 'Detail 3': 'detailed' }[d])
+    await page.locator('#colorBack').click()
+    await page.locator('.picture-card', { hasText: 'Star Tiles' }).first().click()
+  }
+  expect(counts[0]).toBeLessThan(counts[1])
+  expect(counts[1]).toBeLessThan(counts[2])
+  expect(errors).toEqual([])
+})
+
 test('color by number: right number fills, wrong number nudges, finishing celebrates', async ({ page }) => {
   const errors = await start(page)
   await openPicture(page, 'Cozy', 'Mandalas', 'Sunrise Mandala', 'Color by Number')
