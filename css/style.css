@@ -5,6 +5,7 @@
   --rose-deep: #a8656a;
   --card: #fffdf8;
   --shadow: 0 4px 18px rgba(59, 58, 52, 0.1);
+  --hub-fade: #f8f2e8; /* the top of the page, behind the frame's fade (kit.css hub-scrolls) */
 }
 
 * {
@@ -668,6 +669,7 @@ html.ios-app .palette-panel {
 /* --- Night: warm, dim colors around the pictures, no blue light. The pictures keep their real
    colors so what you color looks right in the morning too. [data-theme] beats kit.css's :root. */
 html[data-theme='night'] {
+  --hub-fade: #24170d;
   --hub-bg: #1f140c;
   --hub-ink: #f3d2a8;
   --hub-soft: #c49a6c;

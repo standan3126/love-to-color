@@ -122,6 +122,8 @@ applyLight()
 function show(id) {
   for (const s of ['home', 'setup', 'coloring']) $(s).hidden = s !== id
   frame.setPage(id === 'home' ? 'launch' : 'play')
+  // The pictures and setup pages scroll under the frame; coloring has its own bar.
+  document.body.classList.toggle('hub-scrolls', id !== 'coloring')
   window.scrollTo(0, 0)
 }
 
