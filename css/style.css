@@ -607,85 +607,6 @@ html.ios-app .palette-panel {
   margin: 22px 0 4px;
 }
 
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 8px 0;
-}
-
-.toggle {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  font-size: 1.05rem;
-}
-
-.toggle input {
-  width: 22px;
-  height: 22px;
-  accent-color: var(--rose-deep);
-}
-
-.slider {
-  display: grid;
-  grid-template-columns: 9.5em 1fr;
-  align-items: center;
-  gap: 12px;
-  padding: 6px 0;
-  font-size: 1rem;
-}
-
-.slider input {
-  width: 100%;
-  height: 32px;
-  accent-color: var(--rose-deep);
-}
-
-.move-code {
-  width: 100%;
-  font: 0.8rem ui-monospace, monospace;
-  border-radius: 12px;
-  border: 1px solid var(--hub-line);
-  padding: 8px;
-}
-
-/* Credits: a closed dropdown, like the shared Settings panel's. */
-.credits-box {
-  margin-top: 18px;
-  border-top: 1px solid var(--hub-line);
-}
-
-.credits-box summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 44px;
-  font-weight: 700;
-  list-style: none;
-  cursor: pointer;
-}
-
-.credits-box summary::-webkit-details-marker {
-  display: none;
-}
-
-.credits-box summary::after {
-  content: '▾';
-  transition: transform 0.2s ease;
-}
-
-.credits-box[open] summary::after {
-  transform: rotate(180deg);
-}
-
-.credits {
-  padding-left: 18px;
-  font-size: 0.85rem;
-  color: var(--hub-soft);
-}
-
 .done-picture img {
   width: min(280px, 80%);
   border-radius: 16px;
@@ -741,4 +662,59 @@ html.ios-app .palette-panel {
 .toast.show {
   opacity: 1;
   transform: translate(-50%, 0);
+}
+
+/* --- Night: warm, dim colors around the pictures, no blue light. The pictures keep their real
+   colors so what you color looks right in the morning too. [data-theme] beats kit.css's :root. */
+html[data-theme='night'] {
+  --hub-bg: #1f140c;
+  --hub-ink: #f3d2a8;
+  --hub-soft: #c49a6c;
+  --hub-accent: #c9773a;
+  --hub-accent-ink: #1f140c;
+  --hub-accent-deep: #e0a46a;
+  --hub-panel: rgba(44, 29, 17, 0.92);
+  --hub-panel-solid: #2c1d11;
+  --hub-line: rgba(243, 210, 168, 0.18);
+  --hub-topbar: #1f140c;
+  --hub-veil: rgba(31, 20, 12, 0.7);
+  --card: #2c1d11;
+  --rose: #c9773a;
+  --rose-deep: #b8652e;
+  --shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+html[data-theme='night'] body {
+  background: linear-gradient(180deg, #24170d 0%, #170f08 100%) fixed;
+}
+
+html[data-theme='night'] .bar,
+html[data-theme='night'] .preparing {
+  background: rgba(31, 20, 12, 0.94);
+}
+
+html[data-theme='night'] .stage {
+  background: repeating-linear-gradient(45deg, #2a1c10 0 12px, #251809 12px 24px);
+}
+
+html[data-theme='night'] .choice[aria-checked='true'] {
+  background: #3a2414;
+}
+
+html[data-theme='night'] .keep-delete {
+  background: rgba(44, 29, 17, 0.95);
+}
+
+html[data-theme='night'] .sheet {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* The title's crayon letters in warm colors only. */
+html[data-theme='night'] .rainbow span span:nth-child(7n + 5) { color: #d99a1e; }
+html[data-theme='night'] .rainbow span span:nth-child(7n + 6) { color: #d9607a; }
+
+/* By day the shared panel and buttons take Love To Color's rose. */
+html[data-theme='day'] {
+  --hub-accent: #a8656a;
 }

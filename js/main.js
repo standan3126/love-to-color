@@ -2,8 +2,9 @@
 // then tap cells to fill them. Uses GameHub's toolbox for the Exit button, Tap to Start, saving,
 // moving progress and the gentle music.
 import { addExitButton, setupPage, tapToStart, warmOffline } from '/shared/v1/kit.js'
-import { gameStore, makeTransferCode, openBackupFile, readTransferCode, saveBackupFile } from '/shared/v1/save.js'
-import { LAYER_LABELS, LAYERS, Sound } from '/shared/v1/sound/index.js'
+import { gameStore } from '/shared/v1/save.js'
+import { SettingsPanel } from '/shared/v1/settings.js'
+import { Sound } from '/shared/v1/sound/index.js'
 import { colorName, CRAYONS, PACKS, WHITE } from './crayons.js'
 import { findPicture, GROUPS, loadCatalog, loadCells, outlineCanvas, previewOf, sectionOf, SECTIONS, SIZES, softLines } from './pictures.js'
 import { Stage } from './stage.js'
@@ -22,12 +23,17 @@ const DETAILS = [
   { id: 'detailed', name: 'Detail 3', note: 'More detailed' },
 ]
 const store = gameStore(GAME_ID)
-const settings = { music: true, sounds: true, mode: 'number', freeSet: 'crayons', myColors: [], section: 'easy', groups: {}, nature: {}, patternSize: 'cozy', ...store.get('settings', {}) }
-// Volumes came after the on/off switches: an older "sounds off" starts the sounds slider at 0.
-settings.musicVolume ??= 0.45
-settings.soundsVolume ??= settings.sounds === false ? 0 : 0.7
-const saveSettings = () => store.set('settings', settings)
-const sound = new Sound({ notes: settings.soundsVolume, nature: 0.8, music: settings.musicVolume })
+
+// Settings from before the shared panel (music on/off, musicVolume, soundsVolume, an even older
+// sounds on/off) move to its names: music plays when the Music slider is above 0.
+const old = store.get('settings', null)
+if (old && typeof old.music === 'boolean') {
+  const { music, musicVolume = 0.45, soundsVolume, sounds, ...rest } = old
+  const notes = soundsVolume ?? (sounds === false ? 0 : 0.7)
+  store.set('settings', { ...rest, volumes: { notes, nature: 0.8, music: music ? musicVolume : 0 }, music: 'quiet-words' })
+}
+
+const sound = new Sound({ notes: 0.7, nature: 0.8, music: 0.45 })
 
 const $ = (id) => document.getElementById(id)
 function el(tag, { role, ...props } = {}) {
@@ -44,6 +50,70 @@ function toast(text) {
   clearTimeout(toastTimer)
   toastTimer = setTimeout(() => t.classList.remove('show'), 1800)
 }
+
+// --- Settings (the shared panel, like every GameHub game) -----------------------------------------
+
+// Love To Color's own choices live beside the shared ones in the same settings.
+const panel = new SettingsPanel({
+  gameId: GAME_ID,
+  store,
+  sound,
+  notesLabel: 'Coloring sounds',
+  defaults: {
+    volumes: { notes: 0.7, nature: 0.8, music: 0.45 },
+    mode: 'number',
+    freeSet: 'crayons',
+    myColors: [],
+    section: 'easy',
+    groups: {},
+    patternSize: 'cozy',
+  },
+  onChange: applyLight,
+  // The open picture goes into a code too; the small previews don't (they're made again).
+  beforeExport: () => saveNow(),
+  exportData: () => {
+    const all = store.all()
+    for (const v of Object.values(all)) if (v && typeof v === 'object') delete v.thumb
+    return all
+  },
+  onRestore: () => {
+    clearTimeout(saveTimer)
+    session = null // the restored pictures replace what was open
+    settings = panel.settings
+    renderHome()
+    show('home')
+  },
+  credits: async () => {
+    const catalog = await loadCatalog()
+    const intro = el('p')
+    intro.append('Drawings from ', el('a', { href: 'https://openclipart.org', target: '_blank', rel: 'noopener', textContent: 'Openclipart' }), ', and photos and prints that are public domain or CC0. Thank you to the artists and photographers:')
+    const list = el('ul')
+    list.append(
+      ...catalog
+        .filter((p) => p.credit)
+        .map((p) => {
+          const li = el('li')
+          const by = p.credit.source ? el('a', { href: p.credit.source, target: '_blank', rel: 'noopener', textContent: p.credit.artist }) : p.credit.artist
+          li.append(`${p.name}: “${p.credit.title}” by `, by, ` (${p.credit.license})`)
+          return li
+        }),
+    )
+    return [intro, 'Mandalas, fractals and patterns are drawn in code for Love To Color.', list]
+  },
+})
+let settings = panel.settings
+const saveSettings = () => store.set('settings', settings)
+
+// Night: warm, dim colors around the pictures (the pictures themselves keep their real colors).
+function applyLight() {
+  const night = panel.night
+  document.documentElement.dataset.theme = night ? 'night' : 'day'
+  document.querySelector('meta[name="theme-color"]').content = night ? '#1f140c' : '#f4efe4'
+}
+applyLight()
+
+$('openSettings').addEventListener('click', () => panel.open())
+$('colorSettings').addEventListener('click', () => panel.open())
 
 // --- Screens -------------------------------------------------------------------------------------
 
@@ -569,124 +639,8 @@ document.querySelectorAll('.sheet').forEach((sheet) => {
   })
 })
 
-// Settings open from home (everything) or while coloring (only sound: moving pictures in the
-// middle of one would overwrite what's open).
-$('openSettings').addEventListener('click', () => openSettings(true))
-$('colorSettings').addEventListener('click', () => openSettings(false))
-
-async function openSettings(fromHome) {
-  $('musicToggle').checked = settings.music
-  renderSoundSliders()
-  $('homeSettings').hidden = !fromHome
-  openSheet('settingsSheet')
-  if (!fromHome) return
-  const catalog = await loadCatalog()
-  $('credits').replaceChildren(
-    ...catalog
-      .filter((p) => p.credit)
-      .map((p) => {
-        const li = el('li')
-        const by = p.credit.source ? el('a', { href: p.credit.source, target: '_blank', rel: 'noopener', textContent: p.credit.artist }) : p.credit.artist
-        li.append(`${p.name}: “${p.credit.title}” by `, by, ` (${p.credit.license})`)
-        return li
-      }),
-  )
-  $('moveNote').textContent = ''
-}
-$('musicToggle').addEventListener('change', (e) => {
-  settings.music = e.target.checked
-  saveSettings()
-  sound.unlock()
-  sound.setMusic(settings.music)
-})
-
-function slider(label, value, onInput) {
-  const row = el('label', { className: 'slider' })
-  const input = el('input', { type: 'range', min: 0, max: 1, step: 0.05, value })
-  input.addEventListener('input', () => {
-    sound.unlock()
-    onInput(Number(input.value))
-    saveSettings()
-  })
-  row.append(el('span', { textContent: label }), input)
-  return row
-}
-
-function renderSoundSliders() {
-  $('volumeSliders').replaceChildren(
-    slider('Music volume', settings.musicVolume, (v) => {
-      settings.musicVolume = v
-      sound.setVolumes({ music: v })
-    }),
-    slider('Coloring sounds', settings.soundsVolume, (v) => {
-      settings.soundsVolume = v
-      sound.setVolumes({ notes: v })
-    }),
-  )
-  $('natureSliders').replaceChildren(
-    ...LAYERS.map((name) =>
-      slider(LAYER_LABELS[name], settings.nature[name] || 0, (v) => {
-        if (v) settings.nature[name] = v
-        else delete settings.nature[name]
-        sound.setNature(settings.nature)
-      }),
-    ),
-  )
-}
-
-// Moving pictures: everything except the small previews, which are made again when opened.
-const movable = () => {
-  const all = store.all()
-  for (const v of Object.values(all)) if (v && typeof v === 'object') delete v.thumb
-  return all
-}
-const moveNote = (t) => ($('moveNote').textContent = t)
-$('makeCode').addEventListener('click', async () => {
-  const box = $('moveCode')
-  box.hidden = false
-  $('useCode').hidden = true
-  box.value = makeTransferCode(GAME_ID, movable())
-  box.select()
-  try {
-    await navigator.clipboard.writeText(box.value)
-    moveNote('Code copied. Paste it into Love To Color on the other phone or app.')
-  } catch {
-    moveNote('Copy this code, then paste it into Love To Color on the other phone or app.')
-  }
-})
-$('enterCode').addEventListener('click', () => {
-  $('moveCode').hidden = false
-  $('moveCode').value = ''
-  $('useCode').hidden = false
-  $('moveCode').focus()
-  moveNote('Pasting a code replaces the pictures on this phone.')
-})
-function restore(data) {
-  if (!data || typeof data !== 'object') throw new Error("That isn't Love To Color progress.")
-  store.replaceAll(data)
-  Object.assign(settings, store.get('settings', {}))
-  closeSheet('settingsSheet')
-  renderHome()
-  toast('Your pictures are here')
-}
-$('useCode').addEventListener('click', () => {
-  try {
-    restore(readTransferCode($('moveCode').value, GAME_ID))
-  } catch (e) {
-    moveNote(e.message || "That code didn't work.")
-  }
-})
-$('saveFile').addEventListener('click', () => saveBackupFile(GAME_ID, movable()).catch(() => moveNote("Couldn't save the file.")))
-$('openFile').addEventListener('click', async () => {
-  try {
-    restore(await openBackupFile(GAME_ID))
-  } catch (e) {
-    moveNote(e.message || "Couldn't open that file.")
-  }
-})
-
 // For the browser tests: the open picture.
-window.loveToColor = { get session() { return session } }
+window.loveToColor = { panel, get session() { return session } }
 
 // --- Start ---------------------------------------------------------------------------------------
 
@@ -701,8 +655,7 @@ tapToStart({
   subtitle: 'Tap a cell to fill it with color.',
   onStart: () => {
     sound.unlock()
-    sound.setMusic(settings.music)
-    sound.setNature(settings.nature)
+    panel.applySound()
   },
 })
 setTimeout(() => warmOffline('offline-files.json'), 4000)

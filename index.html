@@ -8,6 +8,7 @@
     <meta name="theme-color" content="#f4efe4" />
     <link rel="icon" href="/icons/icon-192.png" />
     <link rel="stylesheet" href="/shared/v1/kit.css" />
+    <link rel="stylesheet" href="/shared/v1/settings.css" />
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
@@ -90,38 +91,6 @@
         <button type="button" class="button" id="doneSave">Save to Photos</button>
         <button type="button" class="text-button" id="doneHome">Back to pictures</button>
         <button type="button" class="text-button" data-close>Keep looking</button>
-      </div>
-    </div>
-
-    <!-- Settings -->
-    <div id="settingsSheet" class="sheet" hidden>
-      <div class="sheet-card">
-        <header class="sheet-head"><h2>Settings</h2><button type="button" class="icon-button" data-close aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></header>
-        <label class="toggle"><input type="checkbox" id="musicToggle" /> Gentle music</label>
-        <div id="volumeSliders"></div>
-        <h3>Nature sounds</h3>
-        <p class="soft">Mix your own: slide any of them up to hear it.</p>
-        <div id="natureSliders"></div>
-        <div id="homeSettings">
-        <h3>Move your pictures</h3>
-        <p class="soft">To another phone, or into GameHub on this one.</p>
-        <div class="row">
-          <button type="button" class="button small" id="makeCode">Copy a code</button>
-          <button type="button" class="button small" id="enterCode">Paste a code</button>
-        </div>
-        <textarea id="moveCode" class="move-code" rows="3" hidden></textarea>
-        <button type="button" class="button small" id="useCode" hidden>Use this code</button>
-        <div class="row">
-          <button type="button" class="button small" id="saveFile">Save a backup file</button>
-          <button type="button" class="button small" id="openFile">Open a backup file</button>
-        </div>
-        <p id="moveNote" class="soft"></p>
-        <details class="credits-box">
-          <summary>Credits</summary>
-          <p class="soft">Drawings from <a href="https://openclipart.org" target="_blank" rel="noopener">Openclipart</a>, and photos and prints that are public domain or CC0. Thank you to the artists and photographers:</p>
-          <ul id="credits" class="credits"></ul>
-        </details>
-        </div>
       </div>
     </div>
 
