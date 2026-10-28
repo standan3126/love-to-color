@@ -68,6 +68,9 @@ const panel = new SettingsPanel({
     groups: {},
     patternSize: 'cozy',
   },
+  // These are choices made while coloring (and the player's own colors), not settings, so
+  // "Reset to GameHub settings" leaves them alone.
+  keepOnReset: ['mode', 'freeSet', 'myColors', 'section', 'groups', 'patternSize', 'lastFree'],
   onChange: applyLight,
   // The open picture goes into a code too; the small previews don't (they're made again).
   beforeExport: () => saveNow(),
@@ -101,8 +104,9 @@ const panel = new SettingsPanel({
     return [intro, 'Mandalas, fractals and patterns are drawn in code for Love To Color.', list]
   },
 })
+// The panel's own object: Love To Color changes its choices on it, and saveSettings() keeps them.
 let settings = panel.settings
-const saveSettings = () => store.set('settings', settings)
+const saveSettings = () => panel.saveOwn()
 
 // Night: warm, dim colors around the pictures (the pictures themselves keep their real colors).
 function applyLight() {
