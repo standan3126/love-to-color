@@ -651,6 +651,35 @@ html.ios-app .palette-panel {
   padding: 8px;
 }
 
+/* Credits: a closed dropdown, like the shared Settings panel's. */
+.credits-box {
+  margin-top: 18px;
+  border-top: 1px solid var(--hub-line);
+}
+
+.credits-box summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 44px;
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.credits-box summary::-webkit-details-marker {
+  display: none;
+}
+
+.credits-box summary::after {
+  content: '▾';
+  transition: transform 0.2s ease;
+}
+
+.credits-box[open] summary::after {
+  transform: rotate(180deg);
+}
+
 .credits {
   padding-left: 18px;
   font-size: 0.85rem;
